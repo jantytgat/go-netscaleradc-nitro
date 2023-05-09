@@ -16,20 +16,7 @@
 
 package config
 
-type SystemBackupLevel int
-
 const (
-	SystemBackupLevelBasic SystemBackupLevel = iota
-	SystemBackupLevelFull
+	BackupLevelBasic = "basic"
+	BackupLevelFull  = "full"
 )
-
-func (l SystemBackupLevel) String() string {
-	switch l {
-	case SystemBackupLevelBasic:
-		return "basic"
-	case SystemBackupLevelFull:
-		return "full"
-	default:
-		return "full"
-	}
-}

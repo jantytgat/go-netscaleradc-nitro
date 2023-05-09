@@ -35,9 +35,10 @@ func (r SystemBackup) GetTypeName() string {
 	return "systembackup"
 }
 
-func NewSystemBackupCreateRequest(name string, level SystemBackupLevel) SystemBackup {
+func NewSystemBackupCreateRequest(name string, level string) SystemBackup {
+	// TODO data validation
 	return SystemBackup{
 		Filename: name,
-		Level:    level.String(),
+		Level:    level,
 	}
 }
