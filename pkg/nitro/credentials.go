@@ -16,6 +16,7 @@
 
 package nitro
 
-const (
-	ResourcePackagePath = "github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/"
-)
+type Credentials struct {
+	Username string
+	Password string
+}

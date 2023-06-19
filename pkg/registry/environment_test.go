@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-package nitro
+package registry
 
-const (
-	ResourcePackagePath = "github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/"
-)
+// TODO Add tests

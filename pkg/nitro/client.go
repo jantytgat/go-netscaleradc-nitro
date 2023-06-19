@@ -26,15 +26,21 @@ import (
 	"net/http/cookiejar"
 	"reflect"
 
-	"github.com/corelayer/netscaleradc-nitro-go/pkg/resource/stat"
-
-	"github.com/corelayer/netscaleradc-nitro-go/pkg/resource/config"
+	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/config"
+	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/stat"
 )
 
 type Client struct {
-	client     *http.Client
-	settings   Settings
-	isLoggedIn bool
+	client      *http.Client
+	Name        string
+	address     string
+	credentials Credentials
+	settings    Settings
+	isLoggedIn  bool
+}
+
+func (c *Client) BaseUrl() string {
+	return c.settings.GetUrlScheme() + c.address
 }
 
 func (c *Client) IsLoggedIn() bool {
@@ -52,8 +58,8 @@ func (c *Client) Login() error {
 	nitroReq := Request[config.Login]{
 		Method: http.MethodPost,
 		Data: []config.Login{{
-			Username: c.settings.Username,
-			Password: c.settings.Password,
+			Username: c.credentials.Username,
+			Password: c.credentials.Password,
 		}},
 	}
 
@@ -145,8 +151,8 @@ func (c *Client) addNitroRequestHeaders(resourceName string, r *http.Request) {
 	r.Header.Set("User-Agent", c.getUserAgent())
 
 	if !c.isLoggedIn && resourceName != "login" {
-		r.Header.Set("X-NITRO-USER", c.settings.Username)
-		r.Header.Set("X-NITRO-PASS", c.settings.Password)
+		r.Header.Set("X-NITRO-USER", c.credentials.Username)
+		r.Header.Set("X-NITRO-PASS", c.credentials.Password)
 	}
 }
 
@@ -157,7 +163,7 @@ func (c *Client) getUserAgent() string {
 	return "go-netscaler-nitro"
 }
 
-func NewClient(settings Settings) (*Client, error) {
+func NewClient(name string, address string, credentials Credentials, settings Settings) (*Client, error) {
 	tlsLog, err := settings.GetTlsSecretLogWriter()
 	if err != nil {
 		return nil, err
@@ -169,6 +175,9 @@ func NewClient(settings Settings) (*Client, error) {
 
 	timeout, err := settings.GetTimeoutDuration()
 	c := &Client{
+		Name:        name,
+		address:     address,
+		credentials: credentials,
 		client: &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
@@ -222,7 +231,7 @@ func CreateHttpRequest[T ResourceReader](c *Client, req *Request[T]) (*http.Requ
 	if err != nil {
 		return nil, FormatCreateHttpRequestError(req.GetResourceTypeName(), err)
 	}
-	url := c.settings.BaseUrl + query
+	url := c.BaseUrl() + query
 
 	var r *http.Request
 	r, err = http.NewRequest(

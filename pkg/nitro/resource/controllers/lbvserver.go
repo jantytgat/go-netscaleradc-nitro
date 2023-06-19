@@ -20,8 +20,8 @@ import (
 	"net/http"
 
 	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro"
-	"github.com/corelayer/netscaleradc-nitro-go/pkg/resource/config"
-	"github.com/corelayer/netscaleradc-nitro-go/pkg/resource/stat"
+	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/config"
+	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/stat"
 )
 
 type LbVserverController struct {

@@ -22,7 +22,7 @@ import (
 	"strings"
 
 	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro"
-	"github.com/corelayer/netscaleradc-nitro-go/pkg/resource/config"
+	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/config"
 )
 
 type SystemBackupController struct {
@@ -43,7 +43,7 @@ func (c *SystemBackupController) Add() (*nitro.Response[config.SystemBackup], er
 }
 
 // Create sends a request to the configured Client to create a backup with the configured name and level
-func (c *SystemBackupController) Create(name string, level config.SystemBackupLevel) (*nitro.Response[config.SystemBackup], error) {
+func (c *SystemBackupController) Create(name string, level string) (*nitro.Response[config.SystemBackup], error) {
 	r := nitro.Request[config.SystemBackup]{
 		Method: http.MethodPost,
 		Action: nitro.ActionCreate,

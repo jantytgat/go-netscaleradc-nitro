@@ -24,16 +24,22 @@ import (
 )
 
 type Settings struct {
-	Name                      string
-	BaseUrl                   string
-	Username                  string
-	Password                  string
+	UseSsl                    bool
 	Timeout                   int
 	UserAgent                 string
 	ValidateServerCertificate bool
 	LogTlsSecrets             bool
 	LogTlsSecretsDestination  string
 	AutoLogin                 bool
+}
+
+func (n *Settings) GetUrlScheme() string {
+	switch n.UseSsl {
+	case false:
+		return "http://"
+	default:
+		return "https://"
+	}
 }
 
 func (n *Settings) GetTlsSecretLogWriter() (io.Writer, error) {
@@ -51,5 +57,6 @@ func (n *Settings) GetTlsSecretLogWriter() (io.Writer, error) {
 
 // GetTimeoutDuration Returns a time.Duration based on the set timout in milliseconds
 func (n *Settings) GetTimeoutDuration() (time.Duration, error) {
+	// TODO add default timeout
 	return time.ParseDuration(strconv.Itoa(n.Timeout) + "ms")
 }

@@ -14,8 +14,9 @@
  *    limitations under the License.
  */
 
-package nitro
+package registry
 
-const (
-	ResourcePackagePath = "github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/"
-)
+type Node struct {
+	Name    string
+	Address string
+}
