@@ -17,6 +17,6 @@
 package registry
 
 type Node struct {
-	Name    string
-	Address string
+	Name    string `json:"name" yaml:"name" mapstructure:"name"`
+	Address string `json:"address" yaml:"address" mapstructure:"address"`
 }

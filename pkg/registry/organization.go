@@ -17,8 +17,8 @@
 package registry
 
 type Organization struct {
-	Name         string
-	Environments []Environment
+	Name         string        `json:"name" yaml:"name" mapstructure:"name"`
+	Environments []Environment `json:"environments" yaml:"environments" mapstructure:"environments"`
 }
 
 func (o *Organization) GetEnvironmentNameByNodeName(name string) string {

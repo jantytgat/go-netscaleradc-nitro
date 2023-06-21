@@ -23,12 +23,12 @@ import (
 )
 
 type Environment struct {
-	Name        string            // Target environment name, such as "Production"
-	Type        string            // Target type: "StandAlone", "HighAvailabilityPair", "Cluster"
-	Snip        Node              // Connection details for the shared Address (SNIP) of the environment
-	Nodes       []Node            // Connection details for the individual Nodes of each node
-	Credentials nitro.Credentials // Credentials
-	Settings    nitro.Settings    // Connections settings
+	Name        string            `json:"name" yaml:"name" mapstructure:"name"`                      // Target environment name, such as "Production"
+	Type        string            `json:"type" yaml:"type" mapstructure:"type"`                      // Target type: "StandAlone", "HighAvailabilityPair", "Cluster"
+	Snip        Node              `json:"snip" yaml:"snip" mapstructure:"snip"`                      // Connection details for the shared Address (SNIP) of the environment
+	Nodes       []Node            `json:"nodes" yaml:"nodes" mapstructure:"nodes"`                   // Connection details for the individual Nodes of each node
+	Credentials nitro.Credentials `json:"credentials" yaml:"credentials" mapstructure:"credentials"` // Credentials
+	Settings    nitro.Settings    `json:"settings" yaml:"settings" mapstructure:"settings"`          // Connections settings
 }
 
 func (e *Environment) GetNodeNames() []string {
