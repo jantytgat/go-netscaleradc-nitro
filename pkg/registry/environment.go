@@ -25,7 +25,7 @@ import (
 type Environment struct {
 	Name        string            // Target environment name, such as "Production"
 	Type        string            // Target type: "StandAlone", "HighAvailabilityPair", "Cluster"
-	Management  Node              // Connection details for the shared Address (Address) of the environment
+	Snip        Node              // Connection details for the shared Address (SNIP) of the environment
 	Nodes       []Node            // Connection details for the individual Nodes of each node
 	Credentials nitro.Credentials // Credentials
 	Settings    nitro.Settings    // Connections settings
@@ -36,7 +36,7 @@ func (e *Environment) GetNodeNames() []string {
 	for _, n := range e.Nodes {
 		output = append(output, n.Name)
 	}
-	output = append(output, e.Management.Name)
+	output = append(output, e.Snip.Name)
 
 	return output
 }
@@ -57,13 +57,13 @@ func (e *Environment) GetAllNitroClients() (map[string]*nitro.Client, error) {
 	}
 
 	emptyNode := Node{}
-	if e.Management != emptyNode {
-		c, err := nitro.NewClient(e.Management.Name, e.Management.Address, e.Credentials, e.Settings)
+	if e.Snip != emptyNode {
+		c, err := nitro.NewClient(e.Snip.Name, e.Snip.Address, e.Credentials, e.Settings)
 
 		if err != nil {
-			return nil, fmt.Errorf("could not create client for environment %s, Address %s: %w", e.Name, e.Management.Name, err)
+			return nil, fmt.Errorf("could not create client for environment %s, Address %s: %w", e.Name, e.Snip.Name, err)
 		}
-		clients["Address"] = c
+		clients["SNIP"] = c
 	}
 
 	return clients, nil
@@ -81,8 +81,8 @@ func (e *Environment) GetPrimaryNodeName() (string, error) {
 	}
 
 	// Return nitro for Address if defined, as it always points to the primary node
-	if _, exists := clients["Address"]; exists {
-		return "Address", nil
+	if _, exists := clients["SNIP"]; exists {
+		return "SNIP", nil
 	}
 
 	// Return error if there are no individual nodes defined

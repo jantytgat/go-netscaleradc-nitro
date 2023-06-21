@@ -25,14 +25,15 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"reflect"
+	"time"
 
 	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/config"
 	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/stat"
 )
 
 type Client struct {
-	client      *http.Client
 	Name        string
+	client      *http.Client
 	address     string
 	credentials Credentials
 	settings    Settings
@@ -160,7 +161,7 @@ func (c *Client) getUserAgent() string {
 	if c.settings.UserAgent != "" {
 		return c.settings.UserAgent
 	}
-	return "go-netscaler-nitro"
+	return "netscaleradc-nitro-go"
 }
 
 func NewClient(name string, address string, credentials Credentials, settings Settings) (*Client, error) {
@@ -173,7 +174,8 @@ func NewClient(name string, address string, credentials Credentials, settings Se
 	//	log.Println("Exporting TLS Secrets to" + settings.LogTlsSecretsDestination)
 	// }
 
-	timeout, err := settings.GetTimeoutDuration()
+	var timeout time.Duration
+	timeout, err = settings.GetTimeoutDuration()
 	c := &Client{
 		Name:        name,
 		address:     address,
