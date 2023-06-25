@@ -23,7 +23,7 @@ import (
 	"time"
 )
 
-type Settings struct {
+type ConnectionSettings struct {
 	UseSsl                    bool
 	Timeout                   int
 	UserAgent                 string
@@ -33,7 +33,7 @@ type Settings struct {
 	AutoLogin                 bool
 }
 
-func (n *Settings) GetUrlScheme() string {
+func (n *ConnectionSettings) GetUrlScheme() string {
 	switch n.UseSsl {
 	case false:
 		return "http://"
@@ -42,7 +42,7 @@ func (n *Settings) GetUrlScheme() string {
 	}
 }
 
-func (n *Settings) GetTlsSecretLogWriter() (io.Writer, error) {
+func (n *ConnectionSettings) GetTlsSecretLogWriter() (io.Writer, error) {
 	if !n.LogTlsSecrets {
 		return nil, nil
 	}
@@ -56,7 +56,7 @@ func (n *Settings) GetTlsSecretLogWriter() (io.Writer, error) {
 }
 
 // GetTimeoutDuration Returns a time.Duration based on the set timout in milliseconds
-func (n *Settings) GetTimeoutDuration() (time.Duration, error) {
+func (n *ConnectionSettings) GetTimeoutDuration() (time.Duration, error) {
 	// TODO add default timeout
 	return time.ParseDuration(strconv.Itoa(n.Timeout) + "ms")
 }

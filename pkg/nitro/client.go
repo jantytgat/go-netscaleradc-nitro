@@ -36,7 +36,7 @@ type Client struct {
 	client      *http.Client
 	address     string
 	credentials Credentials
-	settings    Settings
+	settings    ConnectionSettings
 	isLoggedIn  bool
 }
 
@@ -164,7 +164,7 @@ func (c *Client) getUserAgent() string {
 	return "netscaleradc-nitro-go"
 }
 
-func NewClient(name string, address string, credentials Credentials, settings Settings) (*Client, error) {
+func NewClient(name string, address string, credentials Credentials, settings ConnectionSettings) (*Client, error) {
 	tlsLog, err := settings.GetTlsSecretLogWriter()
 	if err != nil {
 		return nil, err

@@ -23,7 +23,7 @@ import (
 )
 
 func TestSettings_GetTimeoutDuration(t *testing.T) {
-	s := Settings{
+	s := ConnectionSettings{
 		Timeout: 10,
 	}
 

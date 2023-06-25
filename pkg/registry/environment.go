@@ -23,12 +23,12 @@ import (
 )
 
 type Environment struct {
-	Name        string            `json:"name" yaml:"name" mapstructure:"name"`                      // Target environment name, such as "Production"
-	Type        string            `json:"type" yaml:"type" mapstructure:"type"`                      // Target type: "StandAlone", "HighAvailabilityPair", "Cluster"
-	Snip        Node              `json:"snip" yaml:"snip" mapstructure:"snip"`                      // Connection details for the shared Address (SNIP) of the environment
-	Nodes       []Node            `json:"nodes" yaml:"nodes" mapstructure:"nodes"`                   // Connection details for the individual Nodes of each node
-	Credentials nitro.Credentials `json:"credentials" yaml:"credentials" mapstructure:"credentials"` // Credentials
-	Settings    nitro.Settings    `json:"settings" yaml:"settings" mapstructure:"settings"`          // Connections settings
+	Name               string                   `json:"name" yaml:"name" mapstructure:"name"`                                           // Target environment name, such as "Production"
+	Type               string                   `json:"type" yaml:"type" mapstructure:"type"`                                           // Target type: "StandAlone", "HighAvailabilityPair", "Cluster"
+	Snip               Node                     `json:"snip" yaml:"snip" mapstructure:"snip"`                                           // Connection details for the shared Address (SNIP) of the environment
+	Nodes              []Node                   `json:"nodes" yaml:"nodes" mapstructure:"nodes"`                                        // Connection details for the individual Nodes of each node
+	Credentials        nitro.Credentials        `json:"credentials" yaml:"credentials" mapstructure:"credentials"`                      // Credentials
+	ConnectionSettings nitro.ConnectionSettings `json:"connectionSettings" yaml:"connectionSettings" mapstructure:"connectionSettings"` // Connections settings
 }
 
 func (e *Environment) GetNodeNames() []string {
@@ -46,7 +46,7 @@ func (e *Environment) GetAllNitroClients() (map[string]*nitro.Client, error) {
 	clients := make(map[string]*nitro.Client)
 	if len(e.Nodes) != 0 {
 		for _, n := range e.Nodes {
-			c, err := nitro.NewClient(n.Name, n.Address, e.Credentials, e.Settings)
+			c, err := nitro.NewClient(n.Name, n.Address, e.Credentials, e.ConnectionSettings)
 
 			if err != nil {
 				return nil, fmt.Errorf("could not create client for environment %s, node %s: %w", e.Name, n.Name, err)
@@ -58,7 +58,7 @@ func (e *Environment) GetAllNitroClients() (map[string]*nitro.Client, error) {
 
 	emptyNode := Node{}
 	if e.Snip != emptyNode {
-		c, err := nitro.NewClient(e.Snip.Name, e.Snip.Address, e.Credentials, e.Settings)
+		c, err := nitro.NewClient(e.Snip.Name, e.Snip.Address, e.Credentials, e.ConnectionSettings)
 
 		if err != nil {
 			return nil, fmt.Errorf("could not create client for environment %s, Address %s: %w", e.Name, e.Snip.Name, err)
