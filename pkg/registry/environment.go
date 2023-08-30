@@ -31,82 +31,103 @@ type Environment struct {
 	ConnectionSettings nitro.ConnectionSettings `json:"connectionSettings" yaml:"connectionSettings" mapstructure:"connectionSettings"` // Connections settings
 }
 
+func (e *Environment) GetNitroClientForNode(nodeName string) (*nitro.Client, error) {
+	var (
+		err    error
+		client *nitro.Client
+	)
+
+	for _, n := range e.GetNodes() {
+		if n.Name == nodeName {
+			client, err = nitro.NewClient(n.Name, n.Address, e.Credentials, e.ConnectionSettings)
+			if err != nil {
+				return nil, fmt.Errorf("could not create client for node %s with error %w", nodeName, err)
+			}
+			return client, nil
+		}
+	}
+	return nil, fmt.Errorf("could not create client for node %s with error: node not found in environment %s", nodeName, e.Name)
+}
+
+func (e *Environment) GetNitroClientForSnip() (*nitro.Client, error) {
+	// Return the SNIP Node if defined in the environment
+	if !e.HasSnip() {
+		return nil, fmt.Errorf("no SNIP node defined for environment %s", e.Name)
+
+	}
+
+	client, err := e.GetNitroClientForNode(e.Snip.Name)
+	if err != nil {
+		return nil, fmt.Errorf("could not create client for SNIP node %s for environment %s with error %w", e.Snip.Name, e.Name, err)
+	}
+	return client, nil
+}
+
 func (e *Environment) GetNodeNames() []string {
 	var output []string
-	for _, n := range e.Nodes {
+	for _, n := range e.GetNodes() {
 		output = append(output, n.Name)
 	}
-	output = append(output, e.Snip.Name)
-
 	return output
 }
 
-// GetAllNitroClients Get a map of Client for every node in the environment (Nodes/Address)
-func (e *Environment) GetAllNitroClients() (map[string]*nitro.Client, error) {
-	clients := make(map[string]*nitro.Client)
-	if len(e.Nodes) != 0 {
-		for _, n := range e.Nodes {
-			c, err := nitro.NewClient(n.Name, n.Address, e.Credentials, e.ConnectionSettings)
+func (e *Environment) GetNodes() []Node {
+	var output []Node
+	output = append(output, e.Nodes...)
 
-			if err != nil {
-				return nil, fmt.Errorf("could not create client for environment %s, node %s: %w", e.Name, n.Name, err)
-			}
-
-			clients[n.Name] = c
-		}
+	if e.HasSnip() {
+		output = append(output, e.Snip)
 	}
-
-	emptyNode := Node{}
-	if e.Snip != emptyNode {
-		c, err := nitro.NewClient(e.Snip.Name, e.Snip.Address, e.Credentials, e.ConnectionSettings)
-
-		if err != nil {
-			return nil, fmt.Errorf("could not create client for environment %s, Address %s: %w", e.Name, e.Snip.Name, err)
-		}
-		clients["SNIP"] = c
-	}
-
-	return clients, nil
+	return output
 }
 
-// GetPrimaryNodeName Get the nitro name of the primary node in the environment
-func (e *Environment) GetPrimaryNodeName() (string, error) {
+func (e *Environment) GetPrimaryNitroClient() (*nitro.Client, error) {
 	var (
-		err     error
-		clients map[string]*nitro.Client
+		err    error
+		client *nitro.Client
 	)
-	clients, err = e.GetAllNitroClients()
-	if err != nil {
-		return "", err
+
+	client, _ = e.GetNitroClientForSnip()
+	if client != nil {
+		return client, nil
 	}
 
-	// Return nitro for Address if defined, as it always points to the primary node
-	if _, exists := clients["SNIP"]; exists {
-		return "SNIP", nil
+	if !e.HasNodes() {
+		return nil, fmt.Errorf("no individual nodes defined for environment %s", e.Name)
 	}
 
-	// Return error if there are no individual nodes defined
-	if len(e.Nodes) == 0 {
-		return "", fmt.Errorf("invalid number of nodes defined for the environment %s (%d)", e.Name, len(e.Nodes))
-	}
-
-	// Return nitro for Nodes of the only node in a Standalone NetScaler environment
-	if e.Type == "Standalone" {
-		if len(e.Nodes) != 1 {
-			return "", fmt.Errorf("invalid number of nodes defined for the environment %s (%d)", e.Name, len(e.Nodes))
-		}
-		return e.Nodes[0].Name, nil
-	}
-
-	// TODO Cluster Environment??
-
-	// Return name of the primary node by checking the state
+	// Loop over individual nodes to determine which one is primary
+	// It is not guaranteed in a High-Available environment that one of the nodes is automatically primary, so we he have to iterate over both
 	for _, n := range e.Nodes {
-		if _, err := clients[n.Name].IsPrimaryNode(); err == nil {
-			return n.Name, nil
-		} else {
-			break
+		client, err = e.GetNitroClientForNode(n.Name)
+		if err != nil {
+			return nil, fmt.Errorf("could not create client for node %s to determine status as primary node for environment %s with error %w", n.Name, e.Name, err)
+		}
+
+		var isPrimary bool
+		isPrimary, err = client.IsPrimaryNode()
+		if isPrimary {
+			return client, nil
+		}
+		if err != nil {
+			return nil, fmt.Errorf("could not determine status for node %s for environment %s with error %w", n.Name, e.Name, err)
 		}
 	}
-	return "", fmt.Errorf("could not detect primary node for environment %s: %w", e.Name, err)
+
+	return nil, fmt.Errorf("could not find a primary node for environment %s", e.Name)
+}
+
+func (e *Environment) HasNodes() bool {
+	if len(e.Nodes) == 0 {
+		return false
+	}
+	return true
+}
+
+func (e *Environment) HasSnip() bool {
+	emptyNode := Node{}
+	if e.Snip != emptyNode {
+		return true
+	}
+	return false
 }
