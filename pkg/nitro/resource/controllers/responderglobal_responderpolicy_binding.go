@@ -56,11 +56,12 @@ func (c *ResponderGlobalResponderPolicyBindingController) Count() (*nitro.Respon
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *ResponderGlobalResponderPolicyBindingController) Delete(name string) (*nitro.Response[config.ResponderGlobalResponderPolicyBinding], error) {
+func (c *ResponderGlobalResponderPolicyBindingController) Delete(name string, bindType string) (*nitro.Response[config.ResponderGlobalResponderPolicyBinding], error) {
 	r := nitro.Request[config.ResponderGlobalResponderPolicyBinding]{
 		Method: http.MethodDelete,
 		Arguments: map[string]string{
 			"policyname": name,
+			"type":       bindType,
 		},
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
