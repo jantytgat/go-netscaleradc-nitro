@@ -34,7 +34,7 @@ func NewResponderGlobalResponderPolicyBindingController(client *nitro.Client) *R
 	return &c
 }
 
-func (c *ResponderGlobalResponderPolicyBindingController) Add(name string, bindType string, priority float64, gotoPriorityExpression string) (*nitro.Response[config.ResponderGlobalResponderPolicyBinding], error) {
+func (c *ResponderGlobalResponderPolicyBindingController) Add(name string, bindType string, priority string, gotoPriorityExpression string) (*nitro.Response[config.ResponderGlobalResponderPolicyBinding], error) {
 	r := nitro.Request[config.ResponderGlobalResponderPolicyBinding]{
 		Method: http.MethodPost,
 		Data: []config.ResponderGlobalResponderPolicyBinding{
