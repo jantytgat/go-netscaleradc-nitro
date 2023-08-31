@@ -58,8 +58,10 @@ func (c *ResponderGlobalResponderPolicyBindingController) Count() (*nitro.Respon
 
 func (c *ResponderGlobalResponderPolicyBindingController) Delete(name string) (*nitro.Response[config.ResponderGlobalResponderPolicyBinding], error) {
 	r := nitro.Request[config.ResponderGlobalResponderPolicyBinding]{
-		Method:       http.MethodDelete,
-		ResourceName: name,
+		Method: http.MethodDelete,
+		Arguments: map[string]string{
+			"policyname": name,
+		},
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
