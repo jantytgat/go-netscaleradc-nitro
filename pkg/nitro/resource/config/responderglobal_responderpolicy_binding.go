@@ -25,7 +25,7 @@ type ResponderGlobalResponderPolicyBinding struct {
 	LabelType              string  `json:"labeltype,omitempty" nitro:"permission=readwrite"`
 	LabelName              string  `json:"labelname,omitempty" nitro:"permission=readwrite"`
 	Invoke                 bool    `json:"invoke,omitempty" nitro:"permission=readwrite"`
-	BoundPolicyNumber      float64 `json:"numpol,omitempty" nitro:"permission=readonly"`
+	BoundPolicyNumber      string  `json:"numpol,omitempty" nitro:"permission=readonly"`
 	FlowType               string  `json:"flowtype,omitempty" nitro:"permission=readonly"`
 	Count                  float64 `json:"__count,omitempty" nitro:"permission=readonly"`
 }
