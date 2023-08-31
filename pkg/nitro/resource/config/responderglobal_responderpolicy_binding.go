@@ -34,9 +34,10 @@ func (r ResponderGlobalResponderPolicyBinding) GetTypeName() string {
 	return "responderglobal_responderpolicy_binding"
 }
 
-func NewResponderGlobalResponderPolicyBindingAddRequest(name string, priority float64, gotoPriorityExpression string) ResponderGlobalResponderPolicyBinding {
+func NewResponderGlobalResponderPolicyBindingAddRequest(name string, bindType string, priority float64, gotoPriorityExpression string) ResponderGlobalResponderPolicyBinding {
 	return ResponderGlobalResponderPolicyBinding{
 		PolicyName:             name,
+		Type:                   bindType,
 		Priority:               priority,
 		GotoPriorityExpression: gotoPriorityExpression,
 	}
