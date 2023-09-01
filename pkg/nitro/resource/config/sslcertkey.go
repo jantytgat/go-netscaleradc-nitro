@@ -67,6 +67,15 @@ func NewSslCertKeyAddRequest(name string, cer string, key string) SslCertKey {
 		PrivateKey:  key,
 	}
 }
+
+func NewSslCertKeyUpdateRequest(name string, cer string, key string) SslCertKey {
+	return SslCertKey{
+		Name:        name,
+		Certificate: cer,
+		PrivateKey:  key,
+	}
+}
+
 func NewSslCertKeyClearOcspStaplingCacheRequest(name string) SslCertKey {
 	return SslCertKey{
 		Name:              name,

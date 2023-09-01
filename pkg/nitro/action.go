@@ -29,4 +29,5 @@ const (
 	ActionClear   = "clear"
 	ActionLink    = "link"
 	ActionUnlink  = "unlink"
+	ActionUpdate  = "update"
 )
