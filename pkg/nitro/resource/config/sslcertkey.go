@@ -48,7 +48,7 @@ type SslCertKey struct {
 	OcspResponseStatus string   `json:"ocspresponsestatus,omitempty" nitro:"permission=readonly"`
 	Builtin            []string `json:"builtin,omitempty" nitro:"permission=readonly"`
 	Feature            string   `json:"feature,omitempty" nitro:"permission=readonly"`
-	Budle              string   `json:"bundle,omitempty"  nitro:"permission=readwrite"`
+	Bundle             string   `json:"bundle,omitempty"  nitro:"permission=readwrite"`
 	Password           string   `json:"password,omitempty" nitro:"permission=readwrite"`
 	DeleteFromDevice   bool     `json:"deletefromdevice,omitempty" nitro:"permission=readwrite"`
 	NoDomainCheck      bool     `json:"nodomaincheck,omitempty" nitro:"permission=readwrite"`
@@ -60,6 +60,13 @@ func (r SslCertKey) GetTypeName() string {
 	return "sslcertkey"
 }
 
+func NewSslCertKeyAddRequest(name string, cer string, key string) SslCertKey {
+	return SslCertKey{
+		Name:        name,
+		Certificate: cer,
+		PrivateKey:  key,
+	}
+}
 func NewSslCertKeyClearOcspStaplingCacheRequest(name string) SslCertKey {
 	return SslCertKey{
 		Name:              name,

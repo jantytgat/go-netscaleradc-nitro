@@ -35,6 +35,16 @@ func NewSslCertKeyController(client *nitro.Client) *SslCertKeyController {
 	return &c
 }
 
+func (c *SslCertKeyController) Add(name string, cer string, key string) (*nitro.Response[config.SslCertKey], error) {
+	r := nitro.Request[config.SslCertKey]{
+		Method: http.MethodPost,
+		Data: []config.SslCertKey{
+			config.NewSslCertKeyAddRequest(name, cer, key),
+		},
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
 func (c *SslCertKeyController) Bind(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserver_SslCertKey_Binding], error) {
 	r := nitro.Request[config.SslVserver_SslCertKey_Binding]{
 		Method: http.MethodPut,
