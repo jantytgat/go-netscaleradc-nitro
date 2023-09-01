@@ -102,8 +102,8 @@ func (c *SslCertKeyController) Get(name string, attributes []string) (*nitro.Res
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) GetSslVserverBinding(name string, attributes []string) (*nitro.Response[config.SslVserver_SslCertKey_Binding], error) {
-	r := nitro.Request[config.SslVserver_SslCertKey_Binding]{
+func (c *SslCertKeyController) GetSslVserverBinding(name string, attributes []string) (*nitro.Response[config.SslCertKey_SslVserver_Binding], error) {
+	r := nitro.Request[config.SslCertKey_SslVserver_Binding]{
 		Method:       http.MethodGet,
 		ResourceName: name,
 		Attributes:   attributes,
