@@ -254,20 +254,24 @@ func (r *Request[T]) serializeBody() (io.Reader, error) {
 }
 
 func getUrlQueryAction(action string) string {
-	switch action {
-	case "create":
-		return "?action=create"
-	case "enable":
-		return "?action=enable"
-	case "disable":
-		return "?action=disable"
-	case "rename":
-		return "?action=rename"
-	case "count":
-		return "?count=yes"
-	default:
+	// switch action {
+	// case "create":
+	// 	return "?action=create"
+	// case "enable":
+	// 	return "?action=enable"
+	// case "disable":
+	// 	return "?action=disable"
+	// case "rename":
+	// 	return "?action=rename"
+	// case "count":
+	// 	return "?count=yes"
+	// default:
+	// 	return ""
+	// }
+	if action == "" {
 		return ""
 	}
+	return "?action=" + action
 }
 
 func buildUrlQueryMapString(urlQueryLength int, prefix string, queryMap map[string]string, wrapCharacter string) string {
