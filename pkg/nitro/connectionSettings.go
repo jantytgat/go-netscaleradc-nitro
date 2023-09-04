@@ -17,10 +17,16 @@
 package nitro
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"strconv"
 	"time"
+)
+
+const (
+	NSGO_CONNECTIONSETTINGS_DEFAULT_TIMEOUT   = 5000
+	NSGO_CONNECTIONSETTINGS_DEFAULT_USERAGENT = "netscaleradc-nitro-go"
 )
 
 type ConnectionSettings struct {
@@ -49,7 +55,7 @@ func (n *ConnectionSettings) GetTlsSecretLogWriter() (io.Writer, error) {
 
 	tlsLog, err := os.OpenFile(n.LogTlsSecretsDestination, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
-		return nil, err
+		return nil, ClientConnectionSettingsError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE + " tls secrets log destination")).WithError(err)
 	}
 	return tlsLog, nil
 
@@ -57,6 +63,21 @@ func (n *ConnectionSettings) GetTlsSecretLogWriter() (io.Writer, error) {
 
 // GetTimeoutDuration Returns a time.Duration based on the set timout in milliseconds
 func (n *ConnectionSettings) GetTimeoutDuration() (time.Duration, error) {
-	// TODO add default timeout
-	return time.ParseDuration(strconv.Itoa(n.Timeout) + "ms")
+	var (
+		err     error
+		timeout time.Duration
+	)
+
+	timeout, err = time.ParseDuration(strconv.Itoa(n.Timeout) + "ms")
+	if err != nil {
+		return NSGO_CONNECTIONSETTINGS_DEFAULT_TIMEOUT * time.Microsecond, ClientConnectionSettingsError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE + " timeout duration parsing")).WithError(err)
+	}
+	return timeout, nil
+}
+
+func (n *ConnectionSettings) GetUserAgent() string {
+	if n.UserAgent != "" {
+		return n.UserAgent
+	}
+	return NSGO_CONNECTIONSETTINGS_DEFAULT_USERAGENT
 }

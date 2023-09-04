@@ -30,7 +30,7 @@ import (
 type Request[T ResourceReader] struct {
 	Method       string
 	ResourceName string
-	Action       string
+	Action       Action
 	Arguments    map[string]string
 	Filter       map[string]string
 	Attributes   []string
@@ -43,17 +43,32 @@ func (r *Request[T]) GetResourceTypeName() string {
 	return t.GetTypeName()
 }
 
-func (r *Request[T]) getResourceType() string {
+func (r *Request[T]) getResourceType() ResourceType {
 	t := *new(T)
 	path := reflect.TypeOf(t).PkgPath()
+	path = strings.TrimPrefix(path, ResourcePackagePath)
 
-	return strings.TrimPrefix(path, ResourcePackagePath)
+	switch path {
+	case "config":
+		return ResourceTypeConfig
+	case "stat":
+		return ResourceTypeStat
+	default:
+		return ResourceTypeUnkown
+	}
+}
+
+func (r *Request[T]) ValidateResourceType() error {
+	if r.getResourceType() == ResourceTypeUnkown {
+		return ResourceInvalidTypeError
+	}
+	return nil
 }
 
 func (r *Request[T]) ValidateArguments() error {
 	for k := range r.Arguments {
 		if !contains(r.getValidFieldNames(), k) {
-			return FormatInvalidFieldError(k)
+			return ResourceInvalidFieldError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_INVALIDFIELD_ERROR_MESSAGE+" %s in arguments", k))
 		}
 	}
 	return nil
@@ -62,7 +77,7 @@ func (r *Request[T]) ValidateArguments() error {
 func (r *Request[T]) ValidateFilter() error {
 	for k := range r.Filter {
 		if !contains(r.getValidFieldNames(), k) {
-			return FormatInvalidFieldError(k)
+			return ResourceInvalidFieldError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_INVALIDFIELD_ERROR_MESSAGE+" %s in filter", k))
 		}
 	}
 	return nil
@@ -71,30 +86,35 @@ func (r *Request[T]) ValidateFilter() error {
 func (r *Request[T]) ValidateAttributes() error {
 	for _, k := range r.Attributes {
 		if !contains(r.getValidFieldNames(), k) {
-			return FormatInvalidFieldError(k)
+			return ResourceInvalidFieldError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_INVALIDFIELD_ERROR_MESSAGE+" %s in attributes", k))
 		}
 	}
 	return nil
 }
 
+// TODO REWORK ValidateData() error handling
+// TODO REWORK ValidateData() logic
 func (r *Request[T]) ValidateData(reader io.Reader) error {
-	var err error
+	var (
+		err              error
+		resourceTypeName string
+	)
 
-	resourceTypeName := r.GetResourceTypeName()
+	resourceTypeName = r.GetResourceTypeName()
 
 	// Read Serialized JSON data
 	var b []byte
 	b, err = io.ReadAll(reader)
 
 	if reader == nil || len(b) == 0 {
-		return FormatDataValidationError(resourceTypeName, err)
+		return ResourceValidationError.WithError(err)
 	}
 
 	// Convert JSON to map[string]interface
 	var m map[string]interface{}
 	err = json.Unmarshal(b, &m)
 	if err != nil {
-		return FormatDataValidationError(resourceTypeName, err)
+		return ResourceValidationError.WithError(err)
 	}
 
 	// Standardize data to []interface{} for resources that don't post an array in the body
@@ -110,7 +130,7 @@ func (r *Request[T]) ValidateData(reader io.Reader) error {
 	var tags map[string]Tag
 	tags, err = GetNitroTags[T]()
 	if err != nil {
-		return FormatDataValidationError(resourceTypeName, err)
+		return ResourceValidationError.WithError(err)
 	}
 
 	// Iterate over data in request
@@ -119,8 +139,7 @@ func (r *Request[T]) ValidateData(reader io.Reader) error {
 
 		for k := range d {
 			if tags[k].Permission == "readonly" {
-				err = fmt.Errorf("field %v is tagged as %v", k, tags[k].Permission)
-				return FormatDataValidationError(resourceTypeName, err)
+				return ResourceValidationError.WithMessage(fmt.Sprintf("Validation error for read-only data field %s", k))
 			}
 		}
 	}
@@ -129,28 +148,31 @@ func (r *Request[T]) ValidateData(reader io.Reader) error {
 }
 
 func (r *Request[T]) GetUrlPathAndQuery() (string, error) {
-	var err = r.validateQueryString([]func() error{
+	var (
+		err    error
+		output strings.Builder
+	)
+
+	// Run validation functions before building the Url path and query
+	err = r.validateUrl([]func() error{
+		r.ValidateResourceType,
 		r.ValidateArguments,
 		r.ValidateFilter,
 		r.ValidateAttributes})
-
-	switch err {
-	case nil:
-		return r.getUrlPath() + r.getResourceName() + r.getQueryString(), nil
-	default:
-		return "", err
+	if err != nil {
+		return "", ResourceValidationError.WithError(err)
 	}
+
+	output.WriteString(r.getResourceType().UrlPath())
+	output.WriteString(r.getResourceName())
+	output.WriteString(r.getUrlQuery())
+
+	return output.String(), nil
+
 }
 
 func (r *Request[T]) getUrlPath() string {
-	switch r.getResourceType() {
-	case "config":
-		return "/nitro/v1/config/" + r.GetResourceTypeName()
-	case "stat":
-		return "/nitro/v1/stat/" + r.GetResourceTypeName()
-	default:
-		return ""
-	}
+	return r.getResourceType().UrlPath()
 }
 
 func (r *Request[T]) getResourceName() string {
@@ -162,13 +184,13 @@ func (r *Request[T]) getResourceName() string {
 	}
 }
 
-func (r *Request[T]) getQueryString() string {
+func (r *Request[T]) getUrlQuery() string {
 	var output strings.Builder
 
 	output.WriteString(getUrlQueryAction(r.Action))
-	output.WriteString(buildUrlQueryMapString(output.Len(), "args=", r.Arguments, ""))
-	output.WriteString(buildUrlQueryMapString(output.Len(), "filter=", r.Filter, "/"))
-	output.WriteString(buildUrlQueryListString(output.Len(), "attrs=", r.Attributes))
+	output.WriteString(getUrlQueryMapString(output.Len(), ArgumentsQueryType, r.Arguments, ""))
+	output.WriteString(getUrlQueryMapString(output.Len(), FilterQueryType, r.Filter, "/"))
+	output.WriteString(getUrlQueryListString(output.Len(), AttributesQueryType, r.Attributes))
 
 	return output.String()
 }
@@ -188,7 +210,7 @@ func (r *Request[T]) getValidFieldNames() []string {
 	return fieldNames
 }
 
-func (r *Request[T]) validateQueryString(f []func() error) error {
+func (r *Request[T]) validateUrl(f []func() error) error {
 	for _, v := range f {
 		err := v()
 		if err != nil {
@@ -220,6 +242,7 @@ func (r *Request[T]) serializeBody() (io.Reader, error) {
 	tag := `json:"` + resource.GetTypeName() + `"`
 
 	switch resource.GetTypeName() {
+	// Login is a special case in Nitro API
 	case "login":
 		t = reflect.StructOf([]reflect.StructField{
 			{
@@ -248,72 +271,50 @@ func (r *Request[T]) serializeBody() (io.Reader, error) {
 	w := bytes.Buffer{}
 	err = json.NewEncoder(&w).Encode(v.Addr().Interface())
 	if err != nil {
-		return nil, FormatSerializeBodyError(resource.GetTypeName(), err)
+		return nil, ResourceSerializationError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_SERIALIZATION_ERROR_MESSAGE+" for %s", resource.GetTypeName())).WithError(err)
 	}
 	return bytes.NewReader(w.Bytes()), nil
 }
 
-func getUrlQueryAction(action string) string {
-	// switch action {
-	// case "create":
-	// 	return "?action=create"
-	// case "enable":
-	// 	return "?action=enable"
-	// case "disable":
-	// 	return "?action=disable"
-	// case "rename":
-	// 	return "?action=rename"
-	// case "count":
-	// 	return "?count=yes"
-	// default:
-	// 	return ""
-	// }
-	if action == "" {
+func getUrlQueryAction(a Action) string {
+	switch a {
+	case ActionNone:
 		return ""
+	default:
+		return "?action=" + a.string
 	}
-	return "?action=" + action
 }
 
-func buildUrlQueryMapString(urlQueryLength int, prefix string, queryMap map[string]string, wrapCharacter string) string {
-	if len(queryMap) == 0 {
-		return ""
-	}
-
-	var output strings.Builder
-	output.WriteString(getUrlQueryStringSeparator(urlQueryLength))
-	output.WriteString(prefix)
-	output.WriteString(getQueryMapEntriesAsString(queryMap, wrapCharacter))
-
-	return output.String()
-}
-
-func buildUrlQueryListString(urlQueryLength int, prefix string, queryList []string) string {
+func getUrlQueryListString(urlQueryLength int, queryType UrlQueryType, queryList []string) string {
 	if len(queryList) == 0 {
 		return ""
 	}
 
 	var output strings.Builder
 	output.WriteString(getUrlQueryStringSeparator(urlQueryLength))
-	output.WriteString(prefix)
+	output.WriteString(queryType.Prefix())
 	output.WriteString(strings.Join(queryList, ","))
 
 	return output.String()
 }
 
-func getQueryMapSortedKeys(queryMap map[string]string) []string {
-	keys := make([]string, 0, len(queryMap))
-	for k := range queryMap {
-		keys = append(keys, k)
+func getUrlQueryMapString(urlQueryLength int, queryType UrlQueryType, queryMap map[string]string, wrapCharacter string) string {
+	if len(queryMap) == 0 {
+		return ""
 	}
-	sort.Strings(keys)
 
-	return keys
+	var output strings.Builder
+	output.WriteString(getUrlQueryStringSeparator(urlQueryLength))
+	output.WriteString(queryType.Prefix())
+	output.WriteString(getUrlQueryMapEntriesAsString(queryMap, wrapCharacter))
+
+	return output.String()
 }
 
-func getQueryMapEntriesAsString(queryMap map[string]string, wrapCharacter string) string {
+func getUrlQueryMapEntriesAsString(queryMap map[string]string, wrapCharacter string) string {
 	var output strings.Builder
 
-	keys := getQueryMapSortedKeys(queryMap)
+	keys := getUrlQueryMapSortedKeys(queryMap)
 	lastIndex := len(keys) - 1
 
 	for index, key := range keys {
@@ -325,6 +326,16 @@ func getQueryMapEntriesAsString(queryMap map[string]string, wrapCharacter string
 	}
 
 	return output.String()
+}
+
+func getUrlQueryMapSortedKeys(queryMap map[string]string) []string {
+	keys := make([]string, 0, len(queryMap))
+	for k := range queryMap {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	return keys
 }
 
 func getUrlQueryMapStringSeparator(index int, lastIndex int) string {

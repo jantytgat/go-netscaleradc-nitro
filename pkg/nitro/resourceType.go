@@ -17,21 +17,15 @@
 package nitro
 
 var (
-	ActionNone    = Action{""}
-	ActionCreate  = Action{"create"}
-	ActionRename  = Action{"rename"}
-	ActionEnable  = Action{"enable"}
-	ActionDisable = Action{"disable"}
-	ActionCount   = Action{"count"}
-	ActionRestore = Action{"restore"}
-	ActionSync    = Action{"sync"}
-	ActionForce   = Action{"force"}
-	ActionClear   = Action{"clear"}
-	ActionLink    = Action{"link"}
-	ActionUnlink  = Action{"unlink"}
-	ActionUpdate  = Action{"update"}
+	ResourceTypeUnkown = ResourceType{""}
+	ResourceTypeConfig = ResourceType{"config"}
+	ResourceTypeStat   = ResourceType{"stat"}
 )
 
-type Action struct {
+type ResourceType struct {
 	string
+}
+
+func (r ResourceType) UrlPath() string {
+	return "/nitro/v1/" + r.string
 }

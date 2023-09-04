@@ -16,72 +16,84 @@
 
 package nitro
 
-import (
-	"errors"
-	"fmt"
+const (
+	NSGO_CLIENT_ERROR                                      errorCode = 10000000
+	NSGO_CLIENT_ERROR_MESSAGE                              string    = "Client error"
+	NSGO_CLIENT_CREATE_ERROR                               errorCode = 10000001
+	NSGO_CLIENT_CREATE_ERROR_MESSAGE                       string    = "Error creating client"
+	NSGO_CLIENT_CREATEHTTPREQUEST_ERROR                    errorCode = 10000002
+	NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE            string    = "Error creating http request"
+	NSGO_CLIENT_EXECUTEREQUEST_ERROR                       errorCode = 10000003
+	NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE               string    = "Error executing nitro request"
+	NSGO_CLIENT_LOGIN_ERROR                                errorCode = 10000004
+	NSGO_CLIENT_LOGIN_ERROR_MESSAGE                        string    = "Login error"
+	NSGO_CLIENT_LOGOUT_ERROR                               errorCode = 10000005
+	NSGO_CLIENT_LOGOUT_ERROR_MESSAGE                       string    = "Logout error"
+	NSGO_CLIENT_CONNECTIONSETTINGS_ERROR                   errorCode = 10000006
+	NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE           string    = "Error in connection settings"
+	NSGO_RESOURCE_ERROR                                    errorCode = 40000000
+	NSGO_RESOURCE_ERROR_MESSAGE                            string    = "Resource error"
+	NSGO_RESOURCE_VALIDATION_ERROR                         errorCode = 20000001
+	NSGO_RESOURCE_VALIDATION_ERROR_MESSAGE                 string    = "Validation error"
+	NSGO_RESOURCE_INVALIDTYPE_ERROR                        errorCode = 20000002
+	NSGO_RESOURCE_INVALIDTYPE_ERROR_MESSAGE                string    = "Invalid Resource Type"
+	NSGO_RESOURCE_INVALIDFIELD_ERROR                       errorCode = 20000003
+	NSGO_RESOURCE_INVALIDFIELD_ERROR_MESSAGE               string    = "Invalid field"
+	NSGO_RESOURCE_SERIALIZATION_ERROR                      errorCode = 20000004
+	NSGO_RESOURCE_SERIALIZATION_ERROR_MESSAGE              string    = "Serialization error"
+	NSGO_RESOURCE_DESERIALIZATION_ERROR                    errorCode = 20000005
+	NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE            string    = "Deserialization error"
+	NSGO_RESOURCE_TAG_ERROR                                errorCode = 20000006
+	NSGO_RESOURCE_TAG_ERROR_MESSAGE                        string    = "Tag error"
+	NSGO_CONTROLLER_ERROR                                  errorCode = 30000000
+	NSGO_CONTROLLER_ERROR_MESSAGE                          string    = "Controller Error"
+	NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR         errorCode = 30000001
+	NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_MESSAGE string    = "Operation not implemented"
+	NSGO_API_ERROR                                         errorCode = 40000000
+	NSGO_API_ERROR_MESSAGE                                 string    = "Nitro API specific error"
 )
 
 var (
-	SpecificNitroError        = errors.New("nitro error")
-	SpecificNitroErrorMessage = "%s: %w"
+	ClientCreateError             = Error{code: NSGO_CLIENT_CREATE_ERROR, message: NSGO_CLIENT_CREATE_ERROR_MESSAGE}
+	ClientCreateHttpRequestError  = Error{code: NSGO_CLIENT_CREATEHTTPREQUEST_ERROR, message: NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE}
+	ClientExecuteRequestError     = Error{code: NSGO_CLIENT_EXECUTEREQUEST_ERROR, message: NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE}
+	ClientLoginError              = Error{code: NSGO_CLIENT_LOGIN_ERROR, message: NSGO_CLIENT_LOGIN_ERROR_MESSAGE}
+	ClientLogoutError             = Error{code: NSGO_CLIENT_LOGOUT_ERROR, message: NSGO_CLIENT_LOGOUT_ERROR_MESSAGE}
+	ClientConnectionSettingsError = Error{code: NSGO_CLIENT_CONNECTIONSETTINGS_ERROR, message: NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE}
 
-	DataValidationError        = errors.New("data validation error")
-	DataValidationErrorMessage = "failed validating data for %s with message %s --> %w"
+	ResourceValidationError      = Error{code: NSGO_RESOURCE_VALIDATION_ERROR, message: NSGO_RESOURCE_VALIDATION_ERROR_MESSAGE}
+	ResourceInvalidTypeError     = Error{code: NSGO_RESOURCE_INVALIDTYPE_ERROR, message: NSGO_RESOURCE_INVALIDTYPE_ERROR_MESSAGE}
+	ResourceInvalidFieldError    = Error{code: NSGO_RESOURCE_INVALIDFIELD_ERROR, message: NSGO_RESOURCE_INVALIDFIELD_ERROR_MESSAGE}
+	ResourceSerializationError   = Error{code: NSGO_RESOURCE_SERIALIZATION_ERROR, message: NSGO_RESOURCE_SERIALIZATION_ERROR_MESSAGE}
+	ResourceDeserializationError = Error{code: NSGO_RESOURCE_DESERIALIZATION_ERROR, message: NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE}
+	ResourceTagError             = Error{code: NSGO_RESOURCE_TAG_ERROR, message: NSGO_RESOURCE_TAG_ERROR_MESSAGE}
 
-	SerializeBodyError        = errors.New("body serialization error")
-	SerializeBodyErrorMessage = "failed serializing body for %s with message %s --> %w"
+	ControllerOperationNotImplementedError = Error{code: NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR, message: NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_MESSAGE}
 
-	InvalidFieldError        = errors.New("field name not found error")
-	InvalidFieldErrorMessage = "cannot find field '%s' --> %w"
-
-	CreateHttpRequestError        = errors.New("create http request error")
-	CreateHttpRequestErrorMessage = "createhttprequest[%s]: %s --> %w"
-
-	ExecuteNitroRequestError        = errors.New("execute nitro request error")
-	ExecuteNitroRequestErrorMessage = "executenitrorequest: %s --> %w"
-
-	DeserializeResponseError        = errors.New("unmarshal body error")
-	DeserializeResponseErrorMessage = "deserializeresponse: %s --> %w"
-
-	ExtractDataError        = errors.New("extract data error")
-	ExtractDataErrorMessage = "failed to extract data for %s with message %s --> %w"
-
-	NotImplementedError        = errors.New("not implemented error")
-	NotImplementedErrorMessage = "%s --> %w"
+	ApiError = Error{code: NSGO_API_ERROR, message: NSGO_API_ERROR_MESSAGE}
 )
 
-func FormatSpecificNitroError(msg string) error {
-	return fmt.Errorf(SpecificNitroErrorMessage, msg, SpecificNitroError)
+type Error struct {
+	code    errorCode
+	message string
+	err     error
 }
 
-func FormatDataValidationError(name string, err error) error {
-	return fmt.Errorf(DataValidationErrorMessage, name, err.Error(), DataValidationError)
+func (e Error) WithMessage(msg string) Error {
+	e.message = msg
+	return e
 }
 
-func FormatSerializeBodyError(name string, err error) error {
-	return fmt.Errorf(SerializeBodyErrorMessage, name, err.Error(), SerializeBodyError)
+func (e Error) WithCode(code float64) Error {
+	e.code = errorCode(code)
+	return e
 }
 
-func FormatInvalidFieldError(field string) error {
-	return fmt.Errorf(InvalidFieldErrorMessage, field, InvalidFieldError)
+func (e Error) WithError(err error) Error {
+	e.err = err
+	return e
 }
 
-func FormatCreateHttpRequestError(name string, err error) error {
-	return fmt.Errorf(CreateHttpRequestErrorMessage, name, err.Error(), CreateHttpRequestError)
-}
-
-func FormatExecuteNitroRequestError(err error) error {
-	return fmt.Errorf(ExecuteNitroRequestErrorMessage, err.Error(), ExecuteNitroRequestError)
-}
-
-func FormatDeserializeResponseError(err error) error {
-	return fmt.Errorf(DeserializeResponseErrorMessage, err.Error(), DeserializeResponseError)
-}
-
-func FormatExtractDataError(t string, err error) error {
-	return fmt.Errorf(ExtractDataErrorMessage, t, err.Error(), ExtractDataError)
-}
-
-func FormatNotImplementedError(msg string) error {
-	return fmt.Errorf(NotImplementedErrorMessage, msg, NotImplementedError)
+func (e Error) Error() string {
+	return e.message
 }

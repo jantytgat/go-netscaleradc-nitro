@@ -31,6 +31,11 @@ import (
 	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/stat"
 )
 
+const (
+	NSGO_CLIENT_DEFAULT_ACCEPT_HEADER      = "application/json"
+	NSGO_CLIENT_DEFAULT_CONTENTTYPE_HEADER = "application/json"
+)
+
 type Client struct {
 	Name        string
 	client      *http.Client
@@ -66,18 +71,18 @@ func (c *Client) Login() error {
 
 	req, err = CreateHttpRequest[config.Login](c, &nitroReq)
 	if err != nil {
-		return err
+		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
 
 	res, err = c.client.Do(req)
 	// TODO CHECK RESPONSE
 	if err != nil {
-		return err
+		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while executing http request")).WithError(err)
 	}
 
 	_, err = DeserializeResponse[config.Login](res)
 	if err != nil {
-		return fmt.Errorf("could not log in: %w", err)
+		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while deserializing response")).WithError(err)
 	}
 
 	if c.client.Jar != nil {
@@ -86,7 +91,7 @@ func (c *Client) Login() error {
 		var jar *cookiejar.Jar
 		jar, err = cookiejar.New(nil)
 		if err != nil {
-			return fmt.Errorf("failed creating cookie jar: %w", err)
+			return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while creating cookie jar")).WithError(err)
 		}
 		jar.SetCookies(req.URL, res.Cookies())
 		c.client.Jar = jar
@@ -94,14 +99,13 @@ func (c *Client) Login() error {
 	}
 
 	c.isLoggedIn = true
-	return err
+	return nil
 
 }
 
 func (c *Client) Logout() error {
 	var err error
 	var req *http.Request
-	// var res *http.Response
 
 	nitroReq := Request[config.Logout]{
 		Method: http.MethodPost,
@@ -110,11 +114,11 @@ func (c *Client) Logout() error {
 
 	req, err = CreateHttpRequest[config.Logout](c, &nitroReq)
 	if err != nil {
-		return fmt.Errorf("failed creating logout request: %w", err)
+		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGOUT_ERROR_MESSAGE + " while executing http request")).WithError(err)
 	}
 	_, err = c.client.Do(req)
 	if err != nil {
-		return fmt.Errorf("failed executing logout request: %w", err)
+		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGOUT_ERROR_MESSAGE + " while executing http request")).WithError(err)
 	}
 
 	// Reset http Client CookieJar
@@ -134,6 +138,7 @@ func (c *Client) IsPrimaryNode() (bool, error) {
 
 	var res *Response[stat.HaNode]
 	res, err = ExecuteNitroRequest(c, &nitroReq)
+	// TODO ERROR HANDLING
 	if err != nil {
 		return false, err
 	}
@@ -147,9 +152,9 @@ func (c *Client) IsPrimaryNode() (bool, error) {
 }
 
 func (c *Client) addNitroRequestHeaders(resourceName string, r *http.Request) {
-	r.Header.Set("Accept", "application/json")
-	r.Header.Set("Content-Type", "application/json")
-	r.Header.Set("User-Agent", c.getUserAgent())
+	r.Header.Set("Accept", NSGO_CLIENT_DEFAULT_ACCEPT_HEADER)
+	r.Header.Set("Content-Type", NSGO_CLIENT_DEFAULT_CONTENTTYPE_HEADER)
+	r.Header.Set("User-Agent", c.settings.GetUserAgent())
 
 	if !c.isLoggedIn && resourceName != "login" {
 		r.Header.Set("X-NITRO-USER", c.credentials.Username)
@@ -157,26 +162,21 @@ func (c *Client) addNitroRequestHeaders(resourceName string, r *http.Request) {
 	}
 }
 
-func (c *Client) getUserAgent() string {
-	if c.settings.UserAgent != "" {
-		return c.settings.UserAgent
-	}
-	return "netscaleradc-nitro-go"
-}
-
 func NewClient(name string, address string, credentials Credentials, settings ConnectionSettings) (*Client, error) {
-	tlsLog, err := settings.GetTlsSecretLogWriter()
+	var (
+		err     error
+		client  *Client
+		tlsLog  io.Writer
+		timeout time.Duration
+	)
+
+	tlsLog, err = settings.GetTlsSecretLogWriter()
 	if err != nil {
-		return nil, err
+		return nil, ClientCreateError.WithError(err)
 	}
 
-	// if tlsLog != nil {
-	//	log.Println("Exporting TLS Secrets to" + settings.LogTlsSecretsDestination)
-	// }
-
-	var timeout time.Duration
 	timeout, err = settings.GetTimeoutDuration()
-	c := &Client{
+	client = &Client{
 		Name:        name,
 		address:     address,
 		credentials: credentials,
@@ -195,35 +195,36 @@ func NewClient(name string, address string, credentials Credentials, settings Co
 	}
 
 	if !settings.AutoLogin {
-		return c, nil
+		return client, nil
 	}
 
-	err = c.Login()
+	// Perform auto login
+	err = client.Login()
 	if err != nil {
-		return c, err
+		return client, ClientCreateError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CREATE_ERROR_MESSAGE + " using auto login")).WithError(err)
 	}
-	return c, nil
+	return client, nil
 }
 
-func CreateHttpRequest[T ResourceReader](c *Client, req *Request[T]) (*http.Request, error) {
+func CreateHttpRequest[T ResourceReader](client *Client, req *Request[T]) (*http.Request, error) {
 	var (
 		err  error
 		body io.Reader
+		buf  = &bytes.Buffer{} // Used to validate data before creating the request
 	)
-	buf := &bytes.Buffer{}
 
 	// Do not serialize body when there are no items to serialize
 	if len(req.Data) > 0 {
 		body, err = req.serializeBody()
 		if err != nil {
-			return nil, FormatCreateHttpRequestError(req.GetResourceTypeName(), err)
+			return nil, ClientCreateHttpRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE+" for %s", req.GetResourceTypeName())).WithError(err)
 		}
 
 		tee := io.TeeReader(body, buf)
 
 		err = req.ValidateData(tee)
 		if err != nil {
-			return nil, FormatCreateHttpRequestError(req.GetResourceTypeName(), err)
+			return nil, ClientCreateHttpRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE+" for %s", req.GetResourceTypeName())).WithError(err)
 		}
 	}
 
@@ -231,9 +232,9 @@ func CreateHttpRequest[T ResourceReader](c *Client, req *Request[T]) (*http.Requ
 	var query string
 	query, err = req.GetUrlPathAndQuery()
 	if err != nil {
-		return nil, FormatCreateHttpRequestError(req.GetResourceTypeName(), err)
+		return nil, ClientCreateHttpRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE+" for %s", req.GetResourceTypeName())).WithError(err)
 	}
-	url := c.BaseUrl() + query
+	url := client.BaseUrl() + query
 
 	var r *http.Request
 	r, err = http.NewRequest(
@@ -241,25 +242,28 @@ func CreateHttpRequest[T ResourceReader](c *Client, req *Request[T]) (*http.Requ
 		url,
 		bytes.NewReader(buf.Bytes()))
 	if err != nil {
-		return nil, FormatCreateHttpRequestError(req.GetResourceTypeName(), err)
+		return nil, ClientCreateHttpRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE+" for %s", req.GetResourceTypeName())).WithError(err)
 	}
-	c.addNitroRequestHeaders(req.GetResourceTypeName(), r)
+	client.addNitroRequestHeaders(req.GetResourceTypeName(), r)
 
 	return r, nil
 }
 
 func ExecuteNitroRequest[T ResourceReader](c *Client, r *Request[T]) (*Response[T], error) {
-	var req *http.Request
-	var res *http.Response
-	var err error
+	var (
+		err error
+		req *http.Request
+		res *http.Response
+	)
+
 	req, err = CreateHttpRequest[T](c, r)
 	if err != nil {
-		return nil, FormatExecuteNitroRequestError(err)
+		return nil, ClientExecuteRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
 
 	res, err = c.client.Do(req)
 	if err != nil {
-		return nil, FormatExecuteNitroRequestError(err)
+		return nil, ClientExecuteRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE + " using configured http client")).WithError(err)
 	}
 
 	var nitroRes *Response[T]
@@ -274,15 +278,17 @@ func ExecuteNitroRequest[T ResourceReader](c *Client, r *Request[T]) (*Response[
 
 	nitroRes, err = DeserializeResponse[T](res)
 	if err != nil {
-		return nitroRes, FormatExecuteNitroRequestError(err)
+		return nil, ClientExecuteRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE + " while deserializing response")).WithError(err)
 	}
 
 	return nitroRes, nil
 }
 
 func DeserializeResponse[T ResourceReader](res *http.Response) (*Response[T], error) {
-	var r Response[T]
-	var err error
+	var (
+		err error
+		r   Response[T]
+	)
 
 	defer func() {
 		e := res.Body.Close()
@@ -294,7 +300,7 @@ func DeserializeResponse[T ResourceReader](res *http.Response) (*Response[T], er
 	var rawBody []byte
 	rawBody, err = io.ReadAll(res.Body)
 	if err != nil {
-		return nil, FormatDeserializeResponseError(err)
+		return nil, ResourceDeserializationError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE + " while reading response body from http response")).WithError(err)
 	}
 
 	// Check if any data is returned in the body
@@ -310,7 +316,7 @@ func DeserializeResponse[T ResourceReader](res *http.Response) (*Response[T], er
 	var bodyMap map[string]interface{}
 	err = json.Unmarshal(rawBody, &bodyMap)
 	if err != nil {
-		return &r, FormatDeserializeResponseError(err)
+		return &r, ResourceDeserializationError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE + " while unmarshalling data from response body")).WithError(err)
 	}
 
 	// TODO --> Validate keys??
@@ -331,13 +337,13 @@ func DeserializeResponse[T ResourceReader](res *http.Response) (*Response[T], er
 		case 201:
 			return &r, nil
 		default:
-			return &r, FormatSpecificNitroError(r.Message)
+			return &r, ApiError.WithMessage(fmt.Sprintf(NSGO_API_ERROR_MESSAGE+": %s", r.Message)).WithCode(r.ErrorCode)
 		}
 	}
 
 	err = r.ExtractData(bodyMap[t.GetTypeName()])
 	if err != nil {
-		return &r, FormatDeserializeResponseError(err)
+		return &r, ResourceDeserializationError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE + " while extracting data for resource")).WithError(err)
 	}
 
 	return &r, nil
@@ -351,13 +357,13 @@ func mapToStruct[T any](t *T, v map[string]interface{}) error {
 	// Convert map to json
 	jsonData, err = json.Marshal(v)
 	if err != nil {
-		return fmt.Errorf("failed marshalling map of type %s to json: %w", rt.Name(), err)
+		return ResourceSerializationError.WithMessage(fmt.Sprintf("Failed to marshal map of type %s to json", rt.Name())).WithError(err)
 	}
 
 	// Convert json to struct of type T
 	err = json.Unmarshal(jsonData, t)
 	if err != nil {
-		return fmt.Errorf("failed unmarshalling json to struct of type %s: %w", rt.Name(), err)
+		return ResourceDeserializationError.WithMessage(fmt.Sprintf("Failed to unmarshal json to struct of type %s", rt.Name())).WithError(err)
 	}
 
 	return nil

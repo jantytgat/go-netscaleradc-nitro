@@ -39,7 +39,7 @@ func NewBackupController(client *nitro.Client) *SystemBackupController {
 
 // Add TODO SYSTEMBACKUP
 func (c *SystemBackupController) Add() (*nitro.Response[config.SystemBackup], error) {
-	return nil, nitro.FormatNotImplementedError("Add")
+	return nil, nitro.ControllerOperationNotImplementedError
 }
 
 // Create sends a request to the configured Client to create a backup with the configured name and level

@@ -17,6 +17,7 @@
 package nitro
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -33,12 +34,15 @@ func (n *Response[T]) GetResourceTypeName() string {
 }
 
 func (n *Response[T]) ExtractData(data interface{}) error {
-	var err error
-	var m []interface{}
+	var (
+		err error
+		m   []interface{}
+	)
 
 	// Nitro responses either contain an array of the requested resources, or just the resource
 	// Convert data to []interface[] for uniform operation
 	rt := reflect.TypeOf(data)
+
 	switch rt.Kind() {
 	case reflect.Map:
 		m = append(m, data)
@@ -50,7 +54,7 @@ func (n *Response[T]) ExtractData(data interface{}) error {
 		var d T
 		err = mapToStruct(&d, i.(map[string]interface{}))
 		if err != nil {
-			return err
+			return ResourceDeserializationError.WithMessage(fmt.Sprintf("Failed to extract data for %s", rt.Name())).WithError(err)
 		}
 		n.Data = append(n.Data, d)
 	}

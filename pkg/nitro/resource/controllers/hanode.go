@@ -39,7 +39,7 @@ func NewHaNodeController(client *nitro.Client) *HaNodeController {
 
 // Add TODO HANODE
 func (c *HaNodeController) Add() (*nitro.Response[config.HaNode], error) {
-	return nil, nitro.FormatNotImplementedError("Add")
+	return nil, nitro.ControllerOperationNotImplementedError
 }
 
 func (c *HaNodeController) Count() (*nitro.Response[config.HaNode], error) {
@@ -53,7 +53,7 @@ func (c *HaNodeController) Count() (*nitro.Response[config.HaNode], error) {
 
 // Delete TODO HANODE
 func (c *HaNodeController) Delete() (*nitro.Response[config.HaNode], error) {
-	return nil, nitro.FormatNotImplementedError("Delete")
+	return nil, nitro.ControllerOperationNotImplementedError
 }
 
 func (c *HaNodeController) Failover(force bool) (*nitro.Response[config.HaFailover], error) {
@@ -92,5 +92,5 @@ func (c *HaNodeController) Stats(attributes []string) (*nitro.Response[stat.HaNo
 
 // Update TODO HANODE
 func (c *HaNodeController) Update() (*nitro.Response[config.HaNode], error) {
-	return nil, nitro.FormatNotImplementedError("Update")
+	return nil, nitro.ControllerOperationNotImplementedError
 }

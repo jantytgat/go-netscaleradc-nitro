@@ -131,10 +131,10 @@ func (c *ServerController) Rename(oldName string, newName string) (*nitro.Respon
 
 // Update TODO SERVER
 func (c *ServerController) Update() (*nitro.Response[config.Server], error) {
-	return nil, nitro.FormatNotImplementedError("Update")
+	return nil, nitro.ControllerOperationNotImplementedError
 }
 
 // Unset TODO SERVER
 func (c *ServerController) Unset() (*nitro.Response[config.Server], error) {
-	return nil, nitro.FormatNotImplementedError("Unset")
+	return nil, nitro.ControllerOperationNotImplementedError
 }

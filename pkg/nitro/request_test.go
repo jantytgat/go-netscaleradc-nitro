@@ -182,7 +182,7 @@ func TestGetUrlQueryMapStringSeparator(t *testing.T) {
 	}
 }
 
-func TestGetQueryMapEntriesAsString(t *testing.T) {
+func TestGetUrlQueryMapEntriesAsString(t *testing.T) {
 	var tests = []struct {
 		entries       map[string]string
 		wrapCharacter string
@@ -199,7 +199,7 @@ func TestGetQueryMapEntriesAsString(t *testing.T) {
 	for _, tt := range tests {
 		testName := fmt.Sprintf("%s", tt.want)
 		t.Run(testName, func(t *testing.T) {
-			result := getQueryMapEntriesAsString(tt.entries, tt.wrapCharacter)
+			result := getUrlQueryMapEntriesAsString(tt.entries, tt.wrapCharacter)
 			if result != tt.want {
 				t.Errorf("result: %s - expected: %s", result, tt.want)
 			}
