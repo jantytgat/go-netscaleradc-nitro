@@ -164,6 +164,7 @@ func (r *Request[T]) GetUrlPathAndQuery() (string, error) {
 	}
 
 	output.WriteString(r.getResourceType().UrlPath())
+	output.WriteString(r.GetResourceTypeName())
 	output.WriteString(r.getResourceName())
 	output.WriteString(r.getUrlQuery())
 
@@ -171,9 +172,9 @@ func (r *Request[T]) GetUrlPathAndQuery() (string, error) {
 
 }
 
-func (r *Request[T]) getUrlPath() string {
-	return r.getResourceType().UrlPath()
-}
+// func (r *Request[T]) getUrlPath() string {
+// 	return r.getResourceType().UrlPath() + r.get
+// }
 
 func (r *Request[T]) getResourceName() string {
 	switch len(r.ResourceName) {
