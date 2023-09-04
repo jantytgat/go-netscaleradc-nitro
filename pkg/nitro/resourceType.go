@@ -27,5 +27,5 @@ type ResourceType struct {
 }
 
 func (r ResourceType) UrlPath() string {
-	return "/nitro/v1/" + r.string
+	return "/nitro/v1/" + r.string + "/"
 }
