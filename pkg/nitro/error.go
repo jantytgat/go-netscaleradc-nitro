@@ -97,3 +97,15 @@ func (e Error) WithError(err error) Error {
 func (e Error) Error() string {
 	return e.message
 }
+
+func (e Error) Unwrap() error {
+	return e.err
+}
+
+func (e Error) Is(err error) bool {
+	t, ok := err.(Error)
+	if !ok {
+		return false
+	}
+	return e.code == t.code
+}
