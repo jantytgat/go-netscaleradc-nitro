@@ -17,60 +17,65 @@
 package nitro
 
 const (
-	NSGO_CLIENT_ERROR                                      errorCode = 10000000
+	NSGO_CLIENT_ERROR_CODE                                 errorCode = 10000000
 	NSGO_CLIENT_ERROR_MESSAGE                              string    = "Client error"
-	NSGO_CLIENT_CREATE_ERROR                               errorCode = 10000001
+	NSGO_CLIENT_CREATE_ERROR_CODE                          errorCode = 10000001
 	NSGO_CLIENT_CREATE_ERROR_MESSAGE                       string    = "Error creating client"
-	NSGO_CLIENT_CREATEHTTPREQUEST_ERROR                    errorCode = 10000002
+	NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_CODE               errorCode = 10000002
 	NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE            string    = "Error creating http request"
-	NSGO_CLIENT_EXECUTEREQUEST_ERROR                       errorCode = 10000003
+	NSGO_CLIENT_EXECUTEREQUEST_ERROR_CODE                  errorCode = 10000003
 	NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE               string    = "Error executing nitro request"
-	NSGO_CLIENT_LOGIN_ERROR                                errorCode = 10000004
+	NSGO_CLIENT_LOGIN_ERROR_CODE                           errorCode = 10000004
 	NSGO_CLIENT_LOGIN_ERROR_MESSAGE                        string    = "Login error"
-	NSGO_CLIENT_LOGOUT_ERROR                               errorCode = 10000005
+	NSGO_CLIENT_LOGOUT_ERROR_CODE                          errorCode = 10000005
 	NSGO_CLIENT_LOGOUT_ERROR_MESSAGE                       string    = "Logout error"
-	NSGO_CLIENT_CONNECTIONSETTINGS_ERROR                   errorCode = 10000006
+	NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_CODE              errorCode = 10000006
 	NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE           string    = "Error in connection settings"
-	NSGO_RESOURCE_ERROR                                    errorCode = 40000000
+	NSGO_RESOURCE_ERROR_CODE                               errorCode = 40000000
 	NSGO_RESOURCE_ERROR_MESSAGE                            string    = "Resource error"
-	NSGO_RESOURCE_VALIDATION_ERROR                         errorCode = 20000001
+	NSGO_RESOURCE_VALIDATION_ERROR_CODE                    errorCode = 20000001
 	NSGO_RESOURCE_VALIDATION_ERROR_MESSAGE                 string    = "Validation error"
-	NSGO_RESOURCE_INVALIDTYPE_ERROR                        errorCode = 20000002
+	NSGO_RESOURCE_INVALIDTYPE_ERROR_CODE                   errorCode = 20000002
 	NSGO_RESOURCE_INVALIDTYPE_ERROR_MESSAGE                string    = "Invalid Resource Type"
-	NSGO_RESOURCE_INVALIDFIELD_ERROR                       errorCode = 20000003
+	NSGO_RESOURCE_INVALIDFIELD_ERROR_CODE                  errorCode = 20000003
 	NSGO_RESOURCE_INVALIDFIELD_ERROR_MESSAGE               string    = "Invalid field"
-	NSGO_RESOURCE_SERIALIZATION_ERROR                      errorCode = 20000004
+	NSGO_RESOURCE_SERIALIZATION_ERROR_CODE                 errorCode = 20000004
 	NSGO_RESOURCE_SERIALIZATION_ERROR_MESSAGE              string    = "Serialization error"
-	NSGO_RESOURCE_DESERIALIZATION_ERROR                    errorCode = 20000005
+	NSGO_RESOURCE_DESERIALIZATION_ERROR_CODE               errorCode = 20000005
 	NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE            string    = "Deserialization error"
-	NSGO_RESOURCE_TAG_ERROR                                errorCode = 20000006
+	NSGO_RESOURCE_TAG_ERROR_CODE                           errorCode = 20000006
 	NSGO_RESOURCE_TAG_ERROR_MESSAGE                        string    = "Tag error"
-	NSGO_CONTROLLER_ERROR                                  errorCode = 30000000
+	NSGO_CONTROLLER_ERROR_CODE                             errorCode = 30000000
 	NSGO_CONTROLLER_ERROR_MESSAGE                          string    = "Controller Error"
-	NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR         errorCode = 30000001
+	NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_CODE    errorCode = 30000001
 	NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_MESSAGE string    = "Operation not implemented"
-	NSGO_API_ERROR                                         errorCode = 40000000
+	NSGO_API_ERROR_CODE                                    errorCode = 40000000
 	NSGO_API_ERROR_MESSAGE                                 string    = "Nitro API specific error"
+
+	NSERR_SSL_NOCERT_ERROR_CODE    errorCode = 1540
+	NSERR_SSL_NOCERT_ERROR_MESSAGE string    = "Certificate does not exist"
 )
 
 var (
-	ClientCreateError             = Error{code: NSGO_CLIENT_CREATE_ERROR, message: NSGO_CLIENT_CREATE_ERROR_MESSAGE}
-	ClientCreateHttpRequestError  = Error{code: NSGO_CLIENT_CREATEHTTPREQUEST_ERROR, message: NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE}
-	ClientExecuteRequestError     = Error{code: NSGO_CLIENT_EXECUTEREQUEST_ERROR, message: NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE}
-	ClientLoginError              = Error{code: NSGO_CLIENT_LOGIN_ERROR, message: NSGO_CLIENT_LOGIN_ERROR_MESSAGE}
-	ClientLogoutError             = Error{code: NSGO_CLIENT_LOGOUT_ERROR, message: NSGO_CLIENT_LOGOUT_ERROR_MESSAGE}
-	ClientConnectionSettingsError = Error{code: NSGO_CLIENT_CONNECTIONSETTINGS_ERROR, message: NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE}
+	ClientCreateError             = Error{code: NSGO_CLIENT_CREATE_ERROR_CODE, message: NSGO_CLIENT_CREATE_ERROR_MESSAGE}
+	ClientCreateHttpRequestError  = Error{code: NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_CODE, message: NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE}
+	ClientExecuteRequestError     = Error{code: NSGO_CLIENT_EXECUTEREQUEST_ERROR_CODE, message: NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE}
+	ClientLoginError              = Error{code: NSGO_CLIENT_LOGIN_ERROR_CODE, message: NSGO_CLIENT_LOGIN_ERROR_MESSAGE}
+	ClientLogoutError             = Error{code: NSGO_CLIENT_LOGOUT_ERROR_CODE, message: NSGO_CLIENT_LOGOUT_ERROR_MESSAGE}
+	ClientConnectionSettingsError = Error{code: NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_CODE, message: NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE}
 
-	ResourceValidationError      = Error{code: NSGO_RESOURCE_VALIDATION_ERROR, message: NSGO_RESOURCE_VALIDATION_ERROR_MESSAGE}
-	ResourceInvalidTypeError     = Error{code: NSGO_RESOURCE_INVALIDTYPE_ERROR, message: NSGO_RESOURCE_INVALIDTYPE_ERROR_MESSAGE}
-	ResourceInvalidFieldError    = Error{code: NSGO_RESOURCE_INVALIDFIELD_ERROR, message: NSGO_RESOURCE_INVALIDFIELD_ERROR_MESSAGE}
-	ResourceSerializationError   = Error{code: NSGO_RESOURCE_SERIALIZATION_ERROR, message: NSGO_RESOURCE_SERIALIZATION_ERROR_MESSAGE}
-	ResourceDeserializationError = Error{code: NSGO_RESOURCE_DESERIALIZATION_ERROR, message: NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE}
-	ResourceTagError             = Error{code: NSGO_RESOURCE_TAG_ERROR, message: NSGO_RESOURCE_TAG_ERROR_MESSAGE}
+	ResourceValidationError      = Error{code: NSGO_RESOURCE_VALIDATION_ERROR_CODE, message: NSGO_RESOURCE_VALIDATION_ERROR_MESSAGE}
+	ResourceInvalidTypeError     = Error{code: NSGO_RESOURCE_INVALIDTYPE_ERROR_CODE, message: NSGO_RESOURCE_INVALIDTYPE_ERROR_MESSAGE}
+	ResourceInvalidFieldError    = Error{code: NSGO_RESOURCE_INVALIDFIELD_ERROR_CODE, message: NSGO_RESOURCE_INVALIDFIELD_ERROR_MESSAGE}
+	ResourceSerializationError   = Error{code: NSGO_RESOURCE_SERIALIZATION_ERROR_CODE, message: NSGO_RESOURCE_SERIALIZATION_ERROR_MESSAGE}
+	ResourceDeserializationError = Error{code: NSGO_RESOURCE_DESERIALIZATION_ERROR_CODE, message: NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE}
+	ResourceTagError             = Error{code: NSGO_RESOURCE_TAG_ERROR_CODE, message: NSGO_RESOURCE_TAG_ERROR_MESSAGE}
 
-	ControllerOperationNotImplementedError = Error{code: NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR, message: NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_MESSAGE}
+	ControllerOperationNotImplementedError = Error{code: NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_CODE, message: NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_MESSAGE}
 
-	ApiError = Error{code: NSGO_API_ERROR, message: NSGO_API_ERROR_MESSAGE}
+	ApiError = Error{code: NSGO_API_ERROR_CODE, message: NSGO_API_ERROR_MESSAGE}
+
+	NSERR_SSL_NOCERT = Error{code: NSERR_SSL_NOCERT_ERROR_CODE, message: NSERR_SSL_NOCERT_ERROR_MESSAGE}
 )
 
 type Error struct {
