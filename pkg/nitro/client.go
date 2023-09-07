@@ -337,7 +337,7 @@ func DeserializeResponse[T ResourceReader](res *http.Response) (*Response[T], er
 		case 201:
 			return &r, nil
 		default:
-			return &r, ApiError.WithMessage(fmt.Sprintf(NSGO_API_ERROR_MESSAGE+": %s", r.Message)).WithCode(r.ErrorCode)
+			return &r, ApiError.WithMessage(r.Message).WithCode(r.ErrorCode)
 		}
 	}
 
