@@ -100,7 +100,10 @@ func (e Error) WithError(err error) Error {
 }
 
 func (e Error) Error() string {
-	return e.message
+	if e.code >= NSGO_CLIENT_ERROR_CODE {
+		return e.message
+	}
+	return NSGO_API_ERROR_MESSAGE + ": " + e.message
 }
 
 func (e Error) Unwrap() error {
