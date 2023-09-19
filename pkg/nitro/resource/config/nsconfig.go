@@ -14,25 +14,10 @@
  *    limitations under the License.
  */
 
-package nitro
+package config
 
-var (
-	ActionNone    = Action{""}
-	ActionCreate  = Action{"create"}
-	ActionRename  = Action{"rename"}
-	ActionEnable  = Action{"enable"}
-	ActionDisable = Action{"disable"}
-	ActionCount   = Action{"count"}
-	ActionRestore = Action{"restore"}
-	ActionSave    = Action{"save"}
-	ActionSync    = Action{"sync"}
-	ActionForce   = Action{"force"}
-	ActionClear   = Action{"clear"}
-	ActionLink    = Action{"link"}
-	ActionUnlink  = Action{"unlink"}
-	ActionUpdate  = Action{"update"}
-)
+type NsConfig struct{}
 
-type Action struct {
-	string
+func (r NsConfig) GetTypeName() string {
+	return "nsconfig"
 }

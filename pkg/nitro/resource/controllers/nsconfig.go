@@ -14,25 +14,32 @@
  *    limitations under the License.
  */
 
-package nitro
+package controllers
 
-var (
-	ActionNone    = Action{""}
-	ActionCreate  = Action{"create"}
-	ActionRename  = Action{"rename"}
-	ActionEnable  = Action{"enable"}
-	ActionDisable = Action{"disable"}
-	ActionCount   = Action{"count"}
-	ActionRestore = Action{"restore"}
-	ActionSave    = Action{"save"}
-	ActionSync    = Action{"sync"}
-	ActionForce   = Action{"force"}
-	ActionClear   = Action{"clear"}
-	ActionLink    = Action{"link"}
-	ActionUnlink  = Action{"unlink"}
-	ActionUpdate  = Action{"update"}
+import (
+	"net/http"
+
+	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro"
+	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/config"
 )
 
-type Action struct {
-	string
+type NsConfigController struct {
+	client *nitro.Client
+}
+
+func NewNsConfigController(client *nitro.Client) *NsConfigController {
+	c := NsConfigController{
+		client: client,
+	}
+
+	return &c
+}
+
+func (c *NsConfigController) Save() (*nitro.Response[config.NsConfig], error) {
+	r := nitro.Request[config.NsConfig]{
+		Method: http.MethodPost,
+		Action: nitro.ActionSave,
+	}
+
+	return nitro.ExecuteNitroRequest(c.client, &r)
 }

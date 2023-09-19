@@ -151,6 +151,31 @@ func (c *Client) IsPrimaryNode() (bool, error) {
 	return false, nil
 }
 
+func (c *Client) SaveConfig() error {
+	var err error
+	var req *http.Request
+
+	nitroReq := Request[config.NsConfig]{
+		Method: http.MethodPost,
+		Data:   []config.NsConfig{{}},
+	}
+
+	req, err = CreateHttpRequest[config.NsConfig](c, &nitroReq)
+	if err != nil {
+		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE + " while executing http request")).WithError(err)
+	}
+	_, err = c.client.Do(req)
+	if err != nil {
+		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE + " while executing http request")).WithError(err)
+	}
+
+	// Reset http Client CookieJar
+	c.client.Jar = nil
+	c.isLoggedIn = false
+	return nil
+
+}
+
 func (c *Client) addNitroRequestHeaders(resourceName string, r *http.Request) {
 	r.Header.Set("Accept", NSGO_CLIENT_DEFAULT_ACCEPT_HEADER)
 	r.Header.Set("Content-Type", NSGO_CLIENT_DEFAULT_CONTENTTYPE_HEADER)

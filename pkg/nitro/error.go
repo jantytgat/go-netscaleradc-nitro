@@ -31,6 +31,8 @@ const (
 	NSGO_CLIENT_LOGOUT_ERROR_MESSAGE                       string    = "Logout error"
 	NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_CODE              errorCode = 10000006
 	NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE           string    = "Error in connection settings"
+	NSGO_CLIENT_SAVECONFIG_ERROR_CODE                      errorCode = 10000007
+	NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE                   string    = "Error saving config"
 	NSGO_RESOURCE_ERROR_CODE                               errorCode = 40000000
 	NSGO_RESOURCE_ERROR_MESSAGE                            string    = "Resource error"
 	NSGO_RESOURCE_VALIDATION_ERROR_CODE                    errorCode = 20000001
