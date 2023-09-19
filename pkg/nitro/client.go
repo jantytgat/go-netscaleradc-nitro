@@ -157,6 +157,7 @@ func (c *Client) SaveConfig() error {
 
 	nitroReq := Request[config.NsConfig]{
 		Method: http.MethodPost,
+		Action: ActionSave,
 		Data:   []config.NsConfig{{}},
 	}
 
