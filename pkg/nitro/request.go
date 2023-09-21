@@ -281,6 +281,8 @@ func getUrlQueryAction(a Action) string {
 	switch a {
 	case ActionNone:
 		return ""
+	case ActionCount:
+		return "?count=yes"
 	default:
 		return "?action=" + a.string
 	}
