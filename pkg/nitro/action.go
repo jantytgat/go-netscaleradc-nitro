@@ -18,18 +18,21 @@ package nitro
 
 var (
 	ActionNone    = Action{""}
-	ActionCreate  = Action{"create"}
-	ActionRename  = Action{"rename"}
-	ActionEnable  = Action{"enable"}
-	ActionDisable = Action{"disable"}
+	ActionClear   = Action{"clear"}
 	ActionCount   = Action{"count"}
+	ActionCreate  = Action{"create"}
+	ActionDiff    = Action{"diff"}
+	ActionDisable = Action{"disable"}
+	ActionEnable  = Action{"enable"}
+	ActionForce   = Action{"force"}
+	ActionKill    = Action{"kill"}
+	ActionLink    = Action{"link"}
+	ActionRename  = Action{"rename"}
 	ActionRestore = Action{"restore"}
 	ActionSave    = Action{"save"}
 	ActionSync    = Action{"sync"}
-	ActionForce   = Action{"force"}
-	ActionClear   = Action{"clear"}
-	ActionLink    = Action{"link"}
 	ActionUnlink  = Action{"unlink"}
+	ActionUnset   = Action{"unset"}
 	ActionUpdate  = Action{"update"}
 )
 
