@@ -28,7 +28,7 @@ func (r PolicyStringmapPatternBinding) GetTypeName() string {
 	return "policystringmap_pattern_binding"
 }
 
-func NewPolicyStringmapPatternBindingRequest(name string, key string, value string) PolicyStringmapPatternBinding {
+func NewPolicyStringmapPatternBindingAddRequest(name string, key string, value string) PolicyStringmapPatternBinding {
 	return PolicyStringmapPatternBinding{
 		Name:  name,
 		Key:   key,

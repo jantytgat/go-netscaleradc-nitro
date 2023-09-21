@@ -45,11 +45,11 @@ func (c *SslCertKeyController) Add(name string, cer string, key string) (*nitro.
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) Bind(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserver_SslCertKey_Binding], error) {
-	r := nitro.Request[config.SslVserver_SslCertKey_Binding]{
+func (c *SslCertKeyController) Bind(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserverSslCertKeyBinding], error) {
+	r := nitro.Request[config.SslVserverSslCertKeyBinding]{
 		Method: http.MethodPut,
-		Data: []config.SslVserver_SslCertKey_Binding{
-			config.NewSslVserverCertificateBinding(vserver, certkey, sni),
+		Data: []config.SslVserverSslCertKeyBinding{
+			config.NewSslVserverCertificateBindingAddRequest(vserver, certkey, sni),
 		},
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
@@ -102,8 +102,8 @@ func (c *SslCertKeyController) Get(name string, attributes []string) (*nitro.Res
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) GetSslVserverBinding(name string, attributes []string) (*nitro.Response[config.SslCertKey_SslVserver_Binding], error) {
-	r := nitro.Request[config.SslCertKey_SslVserver_Binding]{
+func (c *SslCertKeyController) GetSslVserverBinding(name string, attributes []string) (*nitro.Response[config.SslCertKeySslVserverBinding], error) {
+	r := nitro.Request[config.SslCertKeySslVserverBinding]{
 		Method:       http.MethodGet,
 		ResourceName: name,
 		Attributes:   attributes,
@@ -141,8 +141,8 @@ func (c *SslCertKeyController) Reload(name string, monitor bool, period string) 
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) Unbind(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserver_SslCertKey_Binding], error) {
-	r := nitro.Request[config.SslVserver_SslCertKey_Binding]{
+func (c *SslCertKeyController) Unbind(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserverSslCertKeyBinding], error) {
+	r := nitro.Request[config.SslVserverSslCertKeyBinding]{
 		Method:       http.MethodDelete,
 		ResourceName: vserver,
 		Arguments:    map[string]string{"certkeyname": certkey, "snicert": strconv.FormatBool(sni)},

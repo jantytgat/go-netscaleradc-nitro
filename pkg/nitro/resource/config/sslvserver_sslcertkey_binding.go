@@ -16,7 +16,7 @@
 
 package config
 
-type SslVserver_SslCertKey_Binding struct {
+type SslVserverSslCertKeyBinding struct {
 	VirtualServerName string  `json:"vservername,omitempty" nitro:"permission=readwrite"`
 	CertKeyName       string  `json:"certkeyname,omitempty" nitro:"permission=readwrite"`
 	Snicert           bool    `json:"snicert,omitempty" nitro:"permission=readwrite"`
@@ -28,12 +28,12 @@ type SslVserver_SslCertKey_Binding struct {
 	Count             float64 `json:"__count,omitempty" nitro:"permission=readonly"`
 }
 
-func (r SslVserver_SslCertKey_Binding) GetTypeName() string {
+func (r SslVserverSslCertKeyBinding) GetTypeName() string {
 	return "sslvserver_sslcertkey_binding"
 }
 
-func NewSslVserverCertificateBinding(vserver string, certkey string, sni bool) SslVserver_SslCertKey_Binding {
-	return SslVserver_SslCertKey_Binding{
+func NewSslVserverCertificateBindingAddRequest(vserver string, certkey string, sni bool) SslVserverSslCertKeyBinding {
+	return SslVserverSslCertKeyBinding{
 		VirtualServerName: vserver,
 		CertKeyName:       certkey,
 		Snicert:           sni,

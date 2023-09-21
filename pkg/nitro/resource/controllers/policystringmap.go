@@ -46,7 +46,7 @@ func (c *PolicyStringmapController) Bind(name string, key string, value string) 
 	r := nitro.Request[config.PolicyStringmapPatternBinding]{
 		Method: http.MethodPut,
 		Data: []config.PolicyStringmapPatternBinding{
-			config.NewPolicyStringmapPatternBindingRequest(name, key, value),
+			config.NewPolicyStringmapPatternBindingAddRequest(name, key, value),
 		},
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
