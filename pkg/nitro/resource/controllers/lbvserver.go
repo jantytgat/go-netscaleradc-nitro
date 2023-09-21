@@ -120,3 +120,8 @@ func (c *LbVserverController) Stats(name string, attributes []string) (*nitro.Re
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
+
+// Unset TODO LbVserver
+func (c *LbVserverController) Unset() (*nitro.Response[config.LbVserver], error) {
+	return nil, nitro.ControllerOperationNotImplementedError
+}
