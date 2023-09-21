@@ -25,7 +25,7 @@ import (
 type Environment struct {
 	Name               string                   `json:"name" yaml:"name" mapstructure:"name"`                                           // Target environment name, such as "Production"
 	Type               string                   `json:"type" yaml:"type" mapstructure:"type"`                                           // Target type: "StandAlone", "HighAvailabilityPair", "Cluster"
-	Snip               Node                     `json:"snip" yaml:"snip" mapstructure:"snip"`                                           // Connection details for the shared Address (SNIP) of the environment
+	Management         Node                     `json:"management" yaml:"management" mapstructure:"management"`                         // Connection details for the Management Address (SNIP / Cluster IP) of the environment
 	Nodes              []Node                   `json:"nodes" yaml:"nodes" mapstructure:"nodes"`                                        // Connection details for the individual Nodes of each node
 	Credentials        nitro.Credentials        `json:"credentials" yaml:"credentials" mapstructure:"credentials"`                      // Credentials
 	ConnectionSettings nitro.ConnectionSettings `json:"connectionSettings" yaml:"connectionSettings" mapstructure:"connectionSettings"` // Connections settings
@@ -51,14 +51,14 @@ func (e *Environment) GetNitroClientForNode(nodeName string) (*nitro.Client, err
 
 func (e *Environment) GetNitroClientForSnip() (*nitro.Client, error) {
 	// Return the SNIP Node if defined in the environment
-	if !e.HasSnip() {
+	if !e.HasManagementAddress() {
 		return nil, fmt.Errorf("no SNIP node defined for environment %s", e.Name)
 
 	}
 
-	client, err := e.GetNitroClientForNode(e.Snip.Name)
+	client, err := e.GetNitroClientForNode(e.Management.Name)
 	if err != nil {
-		return nil, fmt.Errorf("could not create client for SNIP node %s for environment %s with error %w", e.Snip.Name, e.Name, err)
+		return nil, fmt.Errorf("could not create client for SNIP node %s for environment %s with error %w", e.Management.Name, e.Name, err)
 	}
 	return client, nil
 }
@@ -75,8 +75,8 @@ func (e *Environment) GetNodes() []Node {
 	var output []Node
 	output = append(output, e.Nodes...)
 
-	if e.HasSnip() {
-		output = append(output, e.Snip)
+	if e.HasManagementAddress() {
+		output = append(output, e.Management)
 	}
 	return output
 }
@@ -124,9 +124,9 @@ func (e *Environment) HasNodes() bool {
 	return true
 }
 
-func (e *Environment) HasSnip() bool {
+func (e *Environment) HasManagementAddress() bool {
 	emptyNode := Node{}
-	if e.Snip != emptyNode {
+	if e.Management != emptyNode {
 		return true
 	}
 	return false
