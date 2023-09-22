@@ -54,7 +54,7 @@ func (n *Response[T]) ExtractData(data interface{}) error {
 		var d T
 		err = mapToStruct(&d, i.(map[string]interface{}))
 		if err != nil {
-			return ResourceDeserializationError.WithMessage(fmt.Sprintf("Failed to extract data for %s", rt.Name())).WithError(err)
+			return ResourceExtractionError.WithMessage(fmt.Sprintf("Failed to extract data for %s", rt.Name())).WithError(err)
 		}
 		n.Data = append(n.Data, d)
 	}

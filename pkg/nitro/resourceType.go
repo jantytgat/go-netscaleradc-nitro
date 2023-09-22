@@ -17,9 +17,9 @@
 package nitro
 
 var (
-	ResourceTypeUnkown = ResourceType{""}
-	ResourceTypeConfig = ResourceType{"config"}
-	ResourceTypeStat   = ResourceType{"stat"}
+	ResourceTypeUnknown = ResourceType{""}
+	ResourceTypeConfig  = ResourceType{"config"}
+	ResourceTypeStat    = ResourceType{"stat"}
 )
 
 type ResourceType struct {

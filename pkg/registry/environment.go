@@ -49,7 +49,7 @@ func (e *Environment) GetNitroClientForNode(nodeName string) (*nitro.Client, err
 	return nil, fmt.Errorf("could not create client for node %s with error: node not found in environment %s", nodeName, e.Name)
 }
 
-func (e *Environment) GetNitroClientForSnip() (*nitro.Client, error) {
+func (e *Environment) GetNitroClientForManagement() (*nitro.Client, error) {
 	// Return the SNIP Node if defined in the environment
 	if !e.HasManagementAddress() {
 		return nil, fmt.Errorf("no SNIP node defined for environment %s", e.Name)
@@ -87,7 +87,7 @@ func (e *Environment) GetPrimaryNitroClient() (*nitro.Client, error) {
 		client *nitro.Client
 	)
 
-	client, _ = e.GetNitroClientForSnip()
+	client, _ = e.GetNitroClientForManagement()
 	if client != nil {
 		return client, nil
 	}

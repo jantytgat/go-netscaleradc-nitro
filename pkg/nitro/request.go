@@ -54,12 +54,12 @@ func (r *Request[T]) getResourceType() ResourceType {
 	case "stat":
 		return ResourceTypeStat
 	default:
-		return ResourceTypeUnkown
+		return ResourceTypeUnknown
 	}
 }
 
 func (r *Request[T]) ValidateResourceType() error {
-	if r.getResourceType() == ResourceTypeUnkown {
+	if r.getResourceType() == ResourceTypeUnknown {
 		return ResourceInvalidTypeError
 	}
 	return nil
