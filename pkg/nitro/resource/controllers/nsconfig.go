@@ -39,6 +39,7 @@ func (c *NsConfigController) Save() (*nitro.Response[config.NsConfig], error) {
 	r := nitro.Request[config.NsConfig]{
 		Method: http.MethodPost,
 		Action: nitro.ActionSave,
+		Data:   []config.NsConfig{{}},
 	}
 
 	return nitro.ExecuteNitroRequest(c.client, &r)
