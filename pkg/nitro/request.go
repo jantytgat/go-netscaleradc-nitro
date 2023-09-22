@@ -256,6 +256,18 @@ func (r *Request[T]) serializeBody() (io.Reader, error) {
 		// Create a new struct of type t
 		v = reflect.New(t).Elem()
 		v.Field(0).Set(reflect.ValueOf(r.Data[0]))
+	case "nsconfig":
+		t = reflect.StructOf([]reflect.StructField{
+			{
+				Name: "Data",
+				Type: reflect.TypeOf(resource),
+				Tag:  reflect.StructTag(tag),
+			},
+		})
+
+		// Create a new struct of type t
+		v = reflect.New(t).Elem()
+		v.Field(0).Set(reflect.ValueOf(r.Data[0]))
 	default:
 		t = reflect.StructOf([]reflect.StructField{
 			{
