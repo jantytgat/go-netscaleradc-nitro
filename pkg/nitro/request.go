@@ -122,6 +122,8 @@ func (r *Request[T]) ValidateData(reader io.Reader) error {
 	switch resourceTypeName {
 	case "login":
 		data = append(data, m[resourceTypeName])
+	case "nsconfig":
+		data = append(data, m[resourceTypeName])
 	default:
 		data = m[resourceTypeName].([]interface{})
 	}
