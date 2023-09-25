@@ -165,9 +165,15 @@ func (c *Client) SaveConfig() error {
 	if err != nil {
 		return ClientSaveConfigError.WithMessage(fmt.Sprintf(NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
+	// Update HTTP Client timeout to 30seconds to allow the save config action to complete
+	c.client.Timeout = 30 * time.Second
 	_, err = c.client.Do(req)
 	if err != nil {
 		return ClientSaveConfigError.WithMessage(fmt.Sprintf(NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE + " while executing http request")).WithError(err)
+	}
+	c.client.Timeout, err = c.settings.GetTimeoutDuration()
+	if err != nil {
+		return ClientSaveConfigError.WithMessage("Error resetting client timeout").WithError(err)
 	}
 	return nil
 
