@@ -114,7 +114,7 @@ func (c *Client) Logout() error {
 
 	req, err = CreateHttpRequest[config.Logout](c, &nitroReq)
 	if err != nil {
-		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGOUT_ERROR_MESSAGE + " while executing http request")).WithError(err)
+		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGOUT_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
 	_, err = c.client.Do(req)
 	if err != nil {
@@ -163,16 +163,12 @@ func (c *Client) SaveConfig() error {
 
 	req, err = CreateHttpRequest[config.NsConfig](c, &nitroReq)
 	if err != nil {
-		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE + " while executing http request")).WithError(err)
+		return ClientSaveConfigError.WithMessage(fmt.Sprintf(NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
 	_, err = c.client.Do(req)
 	if err != nil {
-		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE + " while executing http request")).WithError(err)
+		return ClientSaveConfigError.WithMessage(fmt.Sprintf(NSGO_CLIENT_SAVECONFIG_ERROR_MESSAGE + " while executing http request")).WithError(err)
 	}
-
-	// Reset http Client CookieJar
-	c.client.Jar = nil
-	c.isLoggedIn = false
 	return nil
 
 }
