@@ -68,11 +68,12 @@ func NewSslCertKeyAddRequest(name string, cer string, key string) SslCertKey {
 	}
 }
 
-func NewSslCertKeyUpdateRequest(name string, cer string, key string) SslCertKey {
+func NewSslCertKeyUpdateRequest(name string, cer string, key string, noDomainCheck bool) SslCertKey {
 	return SslCertKey{
-		Name:        name,
-		Certificate: cer,
-		PrivateKey:  key,
+		Name:          name,
+		Certificate:   cer,
+		PrivateKey:    key,
+		NoDomainCheck: noDomainCheck,
 	}
 }
 

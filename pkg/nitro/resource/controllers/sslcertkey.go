@@ -65,17 +65,6 @@ func (c *SslCertKeyController) BindSslVserver(vserver string, certkey string, sn
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) Update(name string, cer string, key string) (*nitro.Response[config.SslCertKey], error) {
-	r := nitro.Request[config.SslCertKey]{
-		Method: http.MethodPost,
-		Action: nitro.ActionUpdate,
-		Data: []config.SslCertKey{
-			config.NewSslCertKeyUpdateRequest(name, cer, key),
-		},
-	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
-}
-
 func (c *SslCertKeyController) Count() (*nitro.Response[config.SslCertKey], error) {
 	r := nitro.Request[config.SslCertKey]{
 		Method: http.MethodGet,
@@ -199,6 +188,17 @@ func (c *SslCertKeyController) Unlink(name string) (*nitro.Response[config.SslCe
 		Method: http.MethodPost,
 		Action: nitro.ActionUnlink,
 		Data:   []config.SslCertKey{{Name: name}},
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
+func (c *SslCertKeyController) Update(name string, cer string, key string, noDomainCheck bool) (*nitro.Response[config.SslCertKey], error) {
+	r := nitro.Request[config.SslCertKey]{
+		Method: http.MethodPost,
+		Action: nitro.ActionUpdate,
+		Data: []config.SslCertKey{
+			config.NewSslCertKeyUpdateRequest(name, cer, key, noDomainCheck),
+		},
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
