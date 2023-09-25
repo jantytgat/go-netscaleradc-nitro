@@ -45,7 +45,17 @@ func (c *SslCertKeyController) Add(name string, cer string, key string) (*nitro.
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) Bind(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserverSslCertKeyBinding], error) {
+func (c *SslCertKeyController) BindSslService(service string, certkey string, sni bool) (*nitro.Response[config.SslServiceSslCertKeyBinding], error) {
+	r := nitro.Request[config.SslServiceSslCertKeyBinding]{
+		Method: http.MethodPut,
+		Data: []config.SslServiceSslCertKeyBinding{
+			config.NewSslServiceCertificateBindingAddRequest(service, certkey, sni),
+		},
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
+func (c *SslCertKeyController) BindSslVserver(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserverSslCertKeyBinding], error) {
 	r := nitro.Request[config.SslVserverSslCertKeyBinding]{
 		Method: http.MethodPut,
 		Data: []config.SslVserverSslCertKeyBinding{
@@ -74,6 +84,22 @@ func (c *SslCertKeyController) Count() (*nitro.Response[config.SslCertKey], erro
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
+func (c *SslCertKeyController) CountServiceBindings() (*nitro.Response[config.SslCertKeyServiceBinding], error) {
+	r := nitro.Request[config.SslCertKeyServiceBinding]{
+		Method: http.MethodGet,
+		Action: nitro.ActionCount,
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
+func (c *SslCertKeyController) CountSslVserverBindings() (*nitro.Response[config.SslCertKeySslVserverBinding], error) {
+	r := nitro.Request[config.SslCertKeySslVserverBinding]{
+		Method: http.MethodGet,
+		Action: nitro.ActionCount,
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
 func (c *SslCertKeyController) ClearOcspStaplingCache(name string) (*nitro.Response[config.SslCertKey], error) {
 	r := nitro.Request[config.SslCertKey]{
 		Method: http.MethodPost,
@@ -95,6 +121,15 @@ func (c *SslCertKeyController) Delete(name string) (*nitro.Response[config.SslCe
 
 func (c *SslCertKeyController) Get(name string, attributes []string) (*nitro.Response[config.SslCertKey], error) {
 	r := nitro.Request[config.SslCertKey]{
+		Method:       http.MethodGet,
+		ResourceName: name,
+		Attributes:   attributes,
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
+func (c *SslCertKeyController) GetServiceBinding(name string, attributes []string) (*nitro.Response[config.SslCertKeyServiceBinding], error) {
+	r := nitro.Request[config.SslCertKeyServiceBinding]{
 		Method:       http.MethodGet,
 		ResourceName: name,
 		Attributes:   attributes,
@@ -141,7 +176,16 @@ func (c *SslCertKeyController) Reload(name string, monitor bool, period string) 
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) Unbind(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserverSslCertKeyBinding], error) {
+func (c *SslCertKeyController) UnbindSslService(service string, certkey string, sni bool) (*nitro.Response[config.SslServiceSslCertKeyBinding], error) {
+	r := nitro.Request[config.SslServiceSslCertKeyBinding]{
+		Method:       http.MethodDelete,
+		ResourceName: service,
+		Arguments:    map[string]string{"certkeyname": certkey, "snicert": strconv.FormatBool(sni)},
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
+func (c *SslCertKeyController) UnbindSslVserver(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserverSslCertKeyBinding], error) {
 	r := nitro.Request[config.SslVserverSslCertKeyBinding]{
 		Method:       http.MethodDelete,
 		ResourceName: vserver,
