@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	NSGO_CONNECTIONSETTINGS_DEFAULT_TIMEOUT   = 5000
+	NSGO_CONNECTIONSETTINGS_DEFAULT_TIMEOUT   = 5
 	NSGO_CONNECTIONSETTINGS_DEFAULT_USERAGENT = "netscaleradc-nitro-go"
 )
 
@@ -68,9 +68,9 @@ func (n *ConnectionSettings) GetTimeoutDuration() (time.Duration, error) {
 		timeout time.Duration
 	)
 
-	timeout, err = time.ParseDuration(strconv.Itoa(n.Timeout) + "ms")
+	timeout, err = time.ParseDuration(strconv.Itoa(n.Timeout) + "s")
 	if err != nil {
-		return NSGO_CONNECTIONSETTINGS_DEFAULT_TIMEOUT * time.Microsecond, ClientConnectionSettingsError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE + " timeout duration parsing")).WithError(err)
+		return NSGO_CONNECTIONSETTINGS_DEFAULT_TIMEOUT * time.Second, ClientConnectionSettingsError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CONNECTIONSETTINGS_ERROR_MESSAGE + " timeout duration parsing")).WithError(err)
 	}
 	return timeout, nil
 }

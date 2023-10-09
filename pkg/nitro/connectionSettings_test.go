@@ -33,7 +33,7 @@ func TestSettings_GetTimeoutDuration(t *testing.T) {
 	}{
 		{
 			timeout: 10,
-			want:    10 * time.Millisecond,
+			want:    10 * time.Second,
 		},
 	}
 
