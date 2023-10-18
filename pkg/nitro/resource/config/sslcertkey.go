@@ -68,6 +68,15 @@ func NewSslCertKeyAddRequest(name string, cer string, key string) SslCertKey {
 	}
 }
 
+func NewSslCertKeyBundleAddRequest(name string, cer string, key string) SslCertKey {
+	return SslCertKey{
+		Name:        name,
+		Certificate: cer,
+		PrivateKey:  key,
+		Bundle:      "yes",
+	}
+}
+
 func NewSslCertKeyUpdateRequest(name string, cer string, key string, noDomainCheck bool) SslCertKey {
 	return SslCertKey{
 		Name:          name,
