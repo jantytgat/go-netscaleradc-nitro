@@ -20,8 +20,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro"
-	"github.com/corelayer/netscaleradc-nitro-go/pkg/nitro/resource/config"
+	"github.com/corelayer/go-netscaleradc-nitro/pkg/nitro"
+	"github.com/corelayer/go-netscaleradc-nitro/pkg/nitro/resource/config"
 )
 
 type SslCertKeyController struct {
