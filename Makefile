@@ -14,40 +14,8 @@
 # *    limitations under the License.
 # */
 
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+coverage:
+	sh scripts/coverage.sh
 
-# Folder view configuration files
-.DS_Store
-Desktop.ini
-
-# Thumbnail cache files
-._*
-Thumbs.db
-
-# Files that might appear on external disks
-.Spotlight-V100
-.Trashes
-
-# Compilation/Build output folder
-output/
-
-# Jetbrains Configuration files
-.idea/
-
-
-# Go specific files
-# - Test binary, built with `go test -c`
-*.test
-# - Output of the go coverage tool, specifically when used with LiteIDE
-*.out
-# - Dependency directories
-vendor/
-# - Go workspace file
-go.work
-
-*.log
+test:
+	sh scripts/test.sh
