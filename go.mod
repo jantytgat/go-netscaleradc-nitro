@@ -1,3 +1,3 @@
-module github.com/corelayer/netscaleradc-nitro-go
+module github.com/corelayer/go-netscaleradc-nitro
 
 go 1.21
