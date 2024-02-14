@@ -41,3 +41,16 @@ func (c *NsVersionController) Get(attributes []string) (*nitro.Response[config.N
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
+
+func (c *NsVersionController) GetVersion() (string, error) {
+	r := nitro.Request[config.NsVersion]{
+		Method:     http.MethodGet,
+		Attributes: []string{"version"},
+	}
+	res, err := nitro.ExecuteNitroRequest(c.client, &r)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Data[0].Version, nil
+}
