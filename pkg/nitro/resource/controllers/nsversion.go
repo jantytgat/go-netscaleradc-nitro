@@ -34,11 +34,10 @@ func NewNsVersionController(client *nitro.Client) *NsVersionController {
 	return &c
 }
 
-func (c *NsVersionController) Get(name string, attributes []string) (*nitro.Response[config.NsVersion], error) {
+func (c *NsVersionController) Get(attributes []string) (*nitro.Response[config.NsVersion], error) {
 	r := nitro.Request[config.NsVersion]{
-		Method:       http.MethodGet,
-		ResourceName: name,
-		Attributes:   attributes,
+		Method:     http.MethodGet,
+		Attributes: attributes,
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
