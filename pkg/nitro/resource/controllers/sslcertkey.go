@@ -127,20 +127,22 @@ func (c *SslCertKeyController) Get(name string, attributes []string) (*nitro.Res
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) GetServiceBinding(name string, attributes []string) (*nitro.Response[config.SslCertKeyServiceBinding], error) {
+func (c *SslCertKeyController) GetServiceBinding(name string, attributes []string, filter map[string]string) (*nitro.Response[config.SslCertKeyServiceBinding], error) {
 	r := nitro.Request[config.SslCertKeyServiceBinding]{
 		Method:       http.MethodGet,
 		ResourceName: name,
 		Attributes:   attributes,
+		Filter:       filter,
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
-func (c *SslCertKeyController) GetSslVserverBinding(name string, attributes []string) (*nitro.Response[config.SslCertKeySslVserverBinding], error) {
+func (c *SslCertKeyController) GetSslVserverBinding(name string, attributes []string, filter map[string]string) (*nitro.Response[config.SslCertKeySslVserverBinding], error) {
 	r := nitro.Request[config.SslCertKeySslVserverBinding]{
 		Method:       http.MethodGet,
 		ResourceName: name,
 		Attributes:   attributes,
+		Filter:       filter,
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
