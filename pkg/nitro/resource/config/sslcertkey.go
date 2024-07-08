@@ -68,6 +68,15 @@ func NewSslCertKeyAddRequest(name string, cer string, key string) SslCertKey {
 	}
 }
 
+func NewSslCertKeyWithPassphraseRequest(name string, cer string, key string, passphrase string) SslCertKey {
+	return SslCertKey{
+		Name:        name,
+		Certificate: cer,
+		PrivateKey:  key,
+		Passplain:   passphrase,
+	}
+}
+
 func NewSslCertKeyBundleAddRequest(name string, cer string, key string) SslCertKey {
 	return SslCertKey{
 		Name:        name,
@@ -77,11 +86,31 @@ func NewSslCertKeyBundleAddRequest(name string, cer string, key string) SslCertK
 	}
 }
 
+func NewSslCertKeyBundleWithPassphraseAddRequest(name string, cer string, key string, passphrase string) SslCertKey {
+	return SslCertKey{
+		Name:        name,
+		Certificate: cer,
+		PrivateKey:  key,
+		Passplain:   passphrase,
+		Bundle:      "yes",
+	}
+}
+
 func NewSslCertKeyUpdateRequest(name string, cer string, key string, noDomainCheck bool) SslCertKey {
 	return SslCertKey{
 		Name:          name,
 		Certificate:   cer,
 		PrivateKey:    key,
+		NoDomainCheck: noDomainCheck,
+	}
+}
+
+func NewSslCertKeyWithPassphraseUpdateRequest(name string, cer string, key string, passphrase string, noDomainCheck bool) SslCertKey {
+	return SslCertKey{
+		Name:          name,
+		Certificate:   cer,
+		PrivateKey:    key,
+		Passplain:     passphrase,
 		NoDomainCheck: noDomainCheck,
 	}
 }

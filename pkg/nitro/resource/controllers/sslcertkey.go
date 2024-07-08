@@ -45,11 +45,31 @@ func (c *SslCertKeyController) Add(name string, cer string, key string) (*nitro.
 	return nitro.ExecuteNitroRequest(c.client, &r)
 }
 
+func (c *SslCertKeyController) AddWithPassphrase(name string, cer string, key string, passphrase string) (*nitro.Response[config.SslCertKey], error) {
+	r := nitro.Request[config.SslCertKey]{
+		Method: http.MethodPost,
+		Data: []config.SslCertKey{
+			config.NewSslCertKeyWithPassphraseRequest(name, cer, key, passphrase),
+		},
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
 func (c *SslCertKeyController) AddBundle(name string, cer string, key string) (*nitro.Response[config.SslCertKey], error) {
 	r := nitro.Request[config.SslCertKey]{
 		Method: http.MethodPost,
 		Data: []config.SslCertKey{
 			config.NewSslCertKeyBundleAddRequest(name, cer, key),
+		},
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
+func (c *SslCertKeyController) AddBundleWithPassphrase(name string, cer string, key string, passphrase string) (*nitro.Response[config.SslCertKey], error) {
+	r := nitro.Request[config.SslCertKey]{
+		Method: http.MethodPost,
+		Data: []config.SslCertKey{
+			config.NewSslCertKeyBundleWithPassphraseAddRequest(name, cer, key, passphrase),
 		},
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
@@ -210,6 +230,17 @@ func (c *SslCertKeyController) Update(name string, cer string, key string, noDom
 		Action: nitro.ActionUpdate,
 		Data: []config.SslCertKey{
 			config.NewSslCertKeyUpdateRequest(name, cer, key, noDomainCheck),
+		},
+	}
+	return nitro.ExecuteNitroRequest(c.client, &r)
+}
+
+func (c *SslCertKeyController) UpdateWithPassphrase(name string, cer string, key string, passphrase string, noDomainCheck bool) (*nitro.Response[config.SslCertKey], error) {
+	r := nitro.Request[config.SslCertKey]{
+		Method: http.MethodPost,
+		Action: nitro.ActionUpdate,
+		Data: []config.SslCertKey{
+			config.NewSslCertKeyWithPassphraseUpdateRequest(name, cer, key, passphrase, noDomainCheck),
 		},
 	}
 	return nitro.ExecuteNitroRequest(c.client, &r)
