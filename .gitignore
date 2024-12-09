@@ -51,3 +51,5 @@ vendor/
 go.work
 
 *.log
+
+main.go
