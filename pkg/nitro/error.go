@@ -1,20 +1,6 @@
-/*
- * Copyright 2023 CoreLayer BV
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package nitro
+
+import "errors"
 
 var (
 	ClientCreateError             = Error{code: NSGO_CLIENT_CREATE_ERROR_CODE, message: NSGO_CLIENT_CREATE_ERROR_MESSAGE}
@@ -33,7 +19,7 @@ var (
 	ResourceExtractionError      = Error{code: NSGO_RESOURCE_EXTRACTION_ERROR_CODE, message: NSGO_RESOURCE_EXTRACTION_ERROR_MESSAGE}
 	ResourceTagError             = Error{code: NSGO_RESOURCE_TAG_ERROR_CODE, message: NSGO_RESOURCE_TAG_ERROR_MESSAGE}
 
-	ControllerOperationNotImplementedError = Error{code: NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_CODE, message: NSGO_CONTROLLER_OPERATION_NOTIMPLEMENTED_ERROR_MESSAGE}
+	OperationNotImplementedError = Error{code: NSGO_OPERATION_NOTIMPLEMENTED_ERROR_CODE, message: NSGO_OPERATION_NOTIMPLEMENTED_ERROR_MESSAGE}
 
 	ApiError = Error{code: NSGO_API_ERROR_CODE, message: NSGO_API_ERROR_MESSAGE}
 )
@@ -63,6 +49,10 @@ func (e Error) Error() string {
 	if e.code >= NSGO_CLIENT_ERROR_CODE {
 		return e.message
 	}
+
+	if e.err != nil {
+		return NSGO_API_ERROR_MESSAGE + ": " + e.message + " - " + e.err.Error()
+	}
 	return NSGO_API_ERROR_MESSAGE + ": " + e.message
 }
 
@@ -71,7 +61,8 @@ func (e Error) Unwrap() error {
 }
 
 func (e Error) Is(err error) bool {
-	t, ok := err.(Error)
+	var t Error
+	ok := errors.As(err, &t)
 	if !ok {
 		return false
 	}
