@@ -1,19 +1,3 @@
-/*
- * Copyright 2023 CoreLayer BV
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package controllers
 
 import (
@@ -42,7 +26,7 @@ func (c *SslCertKeyController) Add(name string, cer string, key string) (*nitro.
 			config.NewSslCertKeyAddRequest(name, cer, key),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) AddWithPassphrase(name string, cer string, key string, passphrase string) (*nitro.Response[config.SslCertKey], error) {
@@ -52,7 +36,7 @@ func (c *SslCertKeyController) AddWithPassphrase(name string, cer string, key st
 			config.NewSslCertKeyWithPassphraseRequest(name, cer, key, passphrase),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) AddBundle(name string, cer string, key string) (*nitro.Response[config.SslCertKey], error) {
@@ -62,7 +46,7 @@ func (c *SslCertKeyController) AddBundle(name string, cer string, key string) (*
 			config.NewSslCertKeyBundleAddRequest(name, cer, key),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) AddBundleWithPassphrase(name string, cer string, key string, passphrase string) (*nitro.Response[config.SslCertKey], error) {
@@ -72,7 +56,7 @@ func (c *SslCertKeyController) AddBundleWithPassphrase(name string, cer string, 
 			config.NewSslCertKeyBundleWithPassphraseAddRequest(name, cer, key, passphrase),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) BindSslService(service string, certkey string, sni bool) (*nitro.Response[config.SslServiceSslCertKeyBinding], error) {
@@ -82,7 +66,7 @@ func (c *SslCertKeyController) BindSslService(service string, certkey string, sn
 			config.NewSslServiceCertificateBindingAddRequest(service, certkey, sni),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) BindSslVserver(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserverSslCertKeyBinding], error) {
@@ -92,7 +76,7 @@ func (c *SslCertKeyController) BindSslVserver(vserver string, certkey string, sn
 			config.NewSslVserverCertificateBindingAddRequest(vserver, certkey, sni),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) Count() (*nitro.Response[config.SslCertKey], error) {
@@ -100,7 +84,7 @@ func (c *SslCertKeyController) Count() (*nitro.Response[config.SslCertKey], erro
 		Method: http.MethodGet,
 		Action: nitro.ActionCount,
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) CountServiceBindings() (*nitro.Response[config.SslCertKeyServiceBinding], error) {
@@ -108,7 +92,7 @@ func (c *SslCertKeyController) CountServiceBindings() (*nitro.Response[config.Ss
 		Method: http.MethodGet,
 		Action: nitro.ActionCount,
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) CountSslVserverBindings() (*nitro.Response[config.SslCertKeySslVserverBinding], error) {
@@ -116,7 +100,7 @@ func (c *SslCertKeyController) CountSslVserverBindings() (*nitro.Response[config
 		Method: http.MethodGet,
 		Action: nitro.ActionCount,
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) ClearOcspStaplingCache(name string) (*nitro.Response[config.SslCertKey], error) {
@@ -127,7 +111,7 @@ func (c *SslCertKeyController) ClearOcspStaplingCache(name string) (*nitro.Respo
 			config.NewSslCertKeyClearOcspStaplingCacheRequest(name),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) Delete(name string) (*nitro.Response[config.SslCertKey], error) {
@@ -135,7 +119,7 @@ func (c *SslCertKeyController) Delete(name string) (*nitro.Response[config.SslCe
 		Method:       http.MethodPost,
 		ResourceName: name,
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) Get(name string, attributes []string) (*nitro.Response[config.SslCertKey], error) {
@@ -144,7 +128,7 @@ func (c *SslCertKeyController) Get(name string, attributes []string) (*nitro.Res
 		ResourceName: name,
 		Attributes:   attributes,
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) GetServiceBinding(name string, attributes []string, filter map[string]string) (*nitro.Response[config.SslCertKeyServiceBinding], error) {
@@ -154,7 +138,7 @@ func (c *SslCertKeyController) GetServiceBinding(name string, attributes []strin
 		Attributes:   attributes,
 		Filter:       filter,
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) GetSslVserverBinding(name string, attributes []string, filter map[string]string) (*nitro.Response[config.SslCertKeySslVserverBinding], error) {
@@ -164,7 +148,7 @@ func (c *SslCertKeyController) GetSslVserverBinding(name string, attributes []st
 		Attributes:   attributes,
 		Filter:       filter,
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) Link(name string, caName string) (*nitro.Response[config.SslCertKey], error) {
@@ -175,7 +159,7 @@ func (c *SslCertKeyController) Link(name string, caName string) (*nitro.Response
 			config.NewSslCertKeyLinkRequest(name, caName),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) List(filter map[string]string, attributes []string) (*nitro.Response[config.SslCertKey], error) {
@@ -184,7 +168,7 @@ func (c *SslCertKeyController) List(filter map[string]string, attributes []strin
 		Filter:     filter,
 		Attributes: attributes,
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) Reload(name string, monitor bool, period string) (*nitro.Response[config.SslCertKey], error) {
@@ -194,7 +178,7 @@ func (c *SslCertKeyController) Reload(name string, monitor bool, period string) 
 			config.NewSslCertKeyReloadRequest(name, monitor, period),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) UnbindSslService(service string, certkey string, sni bool) (*nitro.Response[config.SslServiceSslCertKeyBinding], error) {
@@ -203,7 +187,7 @@ func (c *SslCertKeyController) UnbindSslService(service string, certkey string, 
 		ResourceName: service,
 		Arguments:    map[string]string{"certkeyname": certkey, "snicert": strconv.FormatBool(sni)},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) UnbindSslVserver(vserver string, certkey string, sni bool) (*nitro.Response[config.SslVserverSslCertKeyBinding], error) {
@@ -212,7 +196,7 @@ func (c *SslCertKeyController) UnbindSslVserver(vserver string, certkey string, 
 		ResourceName: vserver,
 		Arguments:    map[string]string{"certkeyname": certkey, "snicert": strconv.FormatBool(sni)},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) Unlink(name string) (*nitro.Response[config.SslCertKey], error) {
@@ -221,7 +205,7 @@ func (c *SslCertKeyController) Unlink(name string) (*nitro.Response[config.SslCe
 		Action: nitro.ActionUnlink,
 		Data:   []config.SslCertKey{{Name: name}},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) Update(name string, cer string, key string, noDomainCheck bool) (*nitro.Response[config.SslCertKey], error) {
@@ -232,7 +216,7 @@ func (c *SslCertKeyController) Update(name string, cer string, key string, noDom
 			config.NewSslCertKeyUpdateRequest(name, cer, key, noDomainCheck),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
 
 func (c *SslCertKeyController) UpdateWithPassphrase(name string, cer string, key string, passphrase string, noDomainCheck bool) (*nitro.Response[config.SslCertKey], error) {
@@ -243,5 +227,5 @@ func (c *SslCertKeyController) UpdateWithPassphrase(name string, cer string, key
 			config.NewSslCertKeyWithPassphraseUpdateRequest(name, cer, key, passphrase, noDomainCheck),
 		},
 	}
-	return nitro.ExecuteNitroRequest(c.client, &r)
+	return nitro.executeNitroRequest(c.client, &r)
 }
