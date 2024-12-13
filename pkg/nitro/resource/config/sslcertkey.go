@@ -127,3 +127,9 @@ func NewSslCertKeyReloadRequest(name string, monitor bool, period string) SslCer
 	}
 	return r
 }
+
+func NewSslCertKeyUnlinkRequest(name string) SslCertKey {
+	return SslCertKey{
+		Name: name,
+	}
+}
