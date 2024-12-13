@@ -3,7 +3,7 @@ package nitro
 import (
 	"context"
 
-	"github.com/corelayer/go-netscaleradc-nitro/pkg/nitro/resource/config"
+	"github.com/jantytgat/go-netscaleradc-nitro/pkg/nitro/resource/config"
 )
 
 type DnsTxtRecHandler handler
