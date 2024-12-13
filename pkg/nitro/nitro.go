@@ -30,6 +30,31 @@ func addResource[T ResourceReader](ctx context.Context, client *Client, r T) err
 	return nil
 }
 
+func bindResource[T ResourceReader](ctx context.Context, client *Client, r T) error {
+	req := Request[T]{
+		Method: http.MethodPut,
+		Data:   []T{r},
+	}
+
+	if _, err := executeNitroRequest[T](ctx, client, &req); err != nil {
+		return err
+	}
+	return nil
+}
+
+func clearResource[T ResourceReader](ctx context.Context, client *Client, r T) error {
+	req := Request[T]{
+		Method: http.MethodPost,
+		Action: ActionClear,
+		Data:   []T{r},
+	}
+
+	if _, err := executeNitroRequest[T](ctx, client, &req); err != nil {
+		return err
+	}
+	return nil
+}
+
 func countResource[T ResourceReader](ctx context.Context, client *Client) (T, error) {
 	req := Request[T]{
 		Method: http.MethodGet,
@@ -288,6 +313,19 @@ func getResource[T ResourceReader](ctx context.Context, client *Client, name str
 	return res.Data[0], nil
 }
 
+func linkResource[T ResourceReader](ctx context.Context, client *Client, r T) error {
+	req := Request[T]{
+		Method: http.MethodPost,
+		Action: ActionLink,
+		Data:   []T{r},
+	}
+
+	if _, err := executeNitroRequest[T](ctx, client, &req); err != nil {
+		return err
+	}
+	return nil
+}
+
 func listResource[T ResourceReader](ctx context.Context, client *Client, attributes []string, filter map[string]string) ([]T, error) {
 	req := Request[T]{
 		Method:     http.MethodGet,
@@ -407,4 +445,30 @@ func stats[T ResourceReader](ctx context.Context, client *Client, name string, a
 	}
 
 	return res.Data[0], nil
+}
+
+func unbindResource[T ResourceReader](ctx context.Context, client *Client, name string, arguments map[string]string) error {
+	req := Request[T]{
+		Method:       http.MethodDelete,
+		ResourceName: name,
+		Arguments:    arguments,
+	}
+
+	if _, err := executeNitroRequest[T](ctx, client, &req); err != nil {
+		return err
+	}
+	return nil
+}
+
+func unlinkResource[T ResourceReader](ctx context.Context, client *Client, r T) error {
+	req := Request[T]{
+		Method: http.MethodPost,
+		Action: ActionUnlink,
+		Data:   []T{r},
+	}
+
+	if _, err := executeNitroRequest[T](ctx, client, &req); err != nil {
+		return err
+	}
+	return nil
 }
