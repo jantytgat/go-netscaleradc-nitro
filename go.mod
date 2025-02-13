@@ -1,3 +1,3 @@
-module github.com/corelayer/go-netscaleradc-nitro
+module github.com/jantytgat/go-netscaleradc-nitro
 
-go 1.22
+go 1.24

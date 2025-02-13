@@ -1,19 +1,3 @@
-/*
- * Copyright 2023 CoreLayer BV
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package config
 
 type LbVserver struct {
@@ -43,7 +27,7 @@ type LbVserver struct {
 	Ipv6PersistenceMaskLength           string    `json:"v6persistmasklen,omitempty" nitro:"permission=readwrite"`
 	RtspNat                             string    `json:"rtspnat,omitempty" nitro:"permission=readwrite"`
 	RedirectionMode                     string    `json:"m,omitempty" nitro:"permission=readwrite"`
-	TosId                               float64   `json:"tosid,omitempty" nitro:"permission=readwrite"`
+	TosId                               string    `json:"tosid,omitempty" nitro:"permission=readwrite"`
 	DataLength                          string    `json:"datalength,omitempty" nitro:"permission=readwrite"`
 	DataOffset                          string    `json:"dataoffset,omitempty" nitro:"permission=readwrite"`
 	Sessionless                         string    `json:"sessionless,omitempty" nitro:"permission=readwrite"`
@@ -156,32 +140,4 @@ type LbVserver struct {
 
 func (r LbVserver) GetTypeName() string {
 	return "lbvserver"
-}
-
-func NewLbVserverAddRequest(name string, servicetype string, ipaddress string, port int) LbVserver {
-	return LbVserver{
-		Name:        name,
-		ServiceType: servicetype,
-		Ipv46:       ipaddress,
-		Port:        port,
-	}
-}
-
-func NewLbVserverDisableRequest(name string) LbVserver {
-	return LbVserver{
-		Name: name,
-	}
-}
-
-func NewLbVserverEnableRequest(name string) LbVserver {
-	return LbVserver{
-		Name: name,
-	}
-}
-
-func NewLbVserverRenameRequest(oldName string, newName string) LbVserver {
-	return LbVserver{
-		Name:    oldName,
-		NewName: newName,
-	}
 }

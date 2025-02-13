@@ -1,19 +1,3 @@
-/*
- * Copyright 2023 CoreLayer BV
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package nitro
 
 import (
@@ -107,14 +91,14 @@ func (r *Request[T]) ValidateData(reader io.Reader) error {
 	b, err = io.ReadAll(reader)
 
 	if reader == nil || len(b) == 0 {
-		return ResourceValidationError.WithError(err)
+		return ResourceValidationError.WithMessage("no data").WithError(err)
 	}
 
 	// Convert JSON to map[string]interface
 	var m map[string]interface{}
 	err = json.Unmarshal(b, &m)
 	if err != nil {
-		return ResourceValidationError.WithError(err)
+		return ResourceValidationError.WithMessage("unmarshal").WithError(err)
 	}
 
 	// Standardize data to []interface{} for resources that don't post an array in the body
@@ -132,7 +116,7 @@ func (r *Request[T]) ValidateData(reader io.Reader) error {
 	var tags map[string]Tag
 	tags, err = GetNitroTags[T]()
 	if err != nil {
-		return ResourceValidationError.WithError(err)
+		return ResourceValidationError.WithMessage("tags").WithError(err)
 	}
 
 	// Iterate over data in request
@@ -156,13 +140,12 @@ func (r *Request[T]) GetUrlPathAndQuery() (string, error) {
 	)
 
 	// Run validation functions before building the Url path and query
-	err = r.validateUrl([]func() error{
+	if err = r.validateUrl([]func() error{
 		r.ValidateResourceType,
 		r.ValidateArguments,
 		r.ValidateFilter,
-		r.ValidateAttributes})
-	if err != nil {
-		return "", ResourceValidationError.WithError(err)
+		r.ValidateAttributes}); err != nil {
+		return "", ResourceValidationError.WithMessage(err.Error()).WithError(err)
 	}
 
 	output.WriteString(r.getResourceType().UrlPath())
@@ -173,10 +156,6 @@ func (r *Request[T]) GetUrlPathAndQuery() (string, error) {
 	return output.String(), nil
 
 }
-
-// func (r *Request[T]) getUrlPath() string {
-// 	return r.getResourceType().UrlPath() + r.get
-// }
 
 func (r *Request[T]) getResourceName() string {
 	switch len(r.ResourceName) {
@@ -217,7 +196,7 @@ func (r *Request[T]) validateUrl(f []func() error) error {
 	for _, v := range f {
 		err := v()
 		if err != nil {
-			return err
+			return ResourceValidationError.WithMessage("failed to validate url: " + err.Error()).WithError(err)
 		}
 	}
 
