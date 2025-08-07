@@ -168,6 +168,10 @@ func (c *Client) Logout() error {
 	if err != nil {
 		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGOUT_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
+
+	// Set HTTP headers for request, this is normally done in executeNitroRequest
+	c.setHeadersOnRequest(nitroReq.GetResourceTypeName(), req)
+
 	_, err = c.client.Do(req)
 	if err != nil {
 		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGOUT_ERROR_MESSAGE + " while executing http request")).WithError(err)
