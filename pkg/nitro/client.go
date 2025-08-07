@@ -124,6 +124,9 @@ func (c *Client) Login() error {
 		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
 
+	// Set HTTP headers for request, this is normally done in executeNitroRequest
+	c.setHeadersOnRequest(nitroReq.GetResourceTypeName(), req)
+
 	res, err = c.client.Do(req)
 	if err != nil {
 		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while executing http request")).WithError(err)
