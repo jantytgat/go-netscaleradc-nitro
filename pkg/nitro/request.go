@@ -78,7 +78,7 @@ func (r *Request[T]) ValidateAttributes() error {
 
 // TODO REWORK ValidateData() error handling
 // TODO REWORK ValidateData() logic
-func (r *Request[T]) ValidateData(reader io.Reader) error {
+func (r *Request[T]) ValidateData(reader io.Reader, mode SerializationMode) error {
 	var (
 		err              error
 		resourceTypeName string
@@ -114,7 +114,7 @@ func (r *Request[T]) ValidateData(reader io.Reader) error {
 
 	// Get Tags for type T
 	var tags map[string]Tag
-	tags, err = GetNitroTags[T]()
+	tags, err = GetNitroTags[T](mode)
 	if err != nil {
 		return ResourceValidationError.WithMessage("tags").WithError(err)
 	}

@@ -19,7 +19,7 @@ const (
 	NSGO_CLIENT_DEFAULT_CONTENTTYPE_HEADER = "application/json"
 )
 
-func NewClient(name string, address string, credentials Credentials, settings ConnectionSettings) (*Client, error) {
+func NewClient(name string, address string, credentials Credentials, settings ConnectionSettings, mode SerializationMode) (*Client, error) {
 	var (
 		err     error
 		client  *Client
@@ -48,6 +48,7 @@ func NewClient(name string, address string, credentials Credentials, settings Co
 			Timeout: timeout,
 		},
 		settings:   settings,
+		mode:       mode,
 		isLoggedIn: false,
 	}
 
@@ -71,6 +72,7 @@ type Client struct {
 	address     string
 	credentials Credentials
 	settings    ConnectionSettings
+	mode        SerializationMode
 	isLoggedIn  bool
 
 	// Resource Handlers
@@ -119,7 +121,7 @@ func (c *Client) Login() error {
 		}},
 	}
 
-	req, err = createHttpRequest[config.Login](c.BaseUrl(), &nitroReq)
+	req, err = createHttpRequest[config.Login](c.BaseUrl(), &nitroReq, c.mode)
 	if err != nil {
 		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
@@ -132,7 +134,7 @@ func (c *Client) Login() error {
 		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while executing http request")).WithError(err)
 	}
 
-	_, err = deserializeResponse[config.Login](res)
+	_, err = deserializeResponse[config.Login](res, c.mode)
 	if err != nil {
 		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while deserializing response")).WithError(err)
 	}
@@ -164,7 +166,7 @@ func (c *Client) Logout() error {
 		Data:   []config.Logout{{}},
 	}
 
-	req, err = createHttpRequest[config.Logout](c.BaseUrl(), &nitroReq)
+	req, err = createHttpRequest[config.Logout](c.BaseUrl(), &nitroReq, c.mode)
 	if err != nil {
 		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGOUT_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
