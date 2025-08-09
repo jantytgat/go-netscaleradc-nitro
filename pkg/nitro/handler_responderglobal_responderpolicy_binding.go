@@ -26,7 +26,7 @@ func (h ResponderGlobalResponderPolicyBindingHandler) Delete(ctx context.Context
 }
 
 func (h ResponderGlobalResponderPolicyBindingHandler) Get(ctx context.Context, binding string, attributes []string) (config.ResponderGlobalResponderPolicyBinding, error) {
-	return getResource[config.ResponderGlobalResponderPolicyBinding](ctx, h.client, binding, attributes)
+	return getResourceWithName[config.ResponderGlobalResponderPolicyBinding](ctx, h.client, binding, attributes)
 }
 
 func (h ResponderGlobalResponderPolicyBindingHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.ResponderGlobalResponderPolicyBinding, error) {

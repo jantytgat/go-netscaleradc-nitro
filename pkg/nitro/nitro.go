@@ -70,7 +70,23 @@ func countResource[T ResourceReader](ctx context.Context, client *Client) (T, er
 	return res.Data[0], nil
 }
 
-func createHttpRequest[T ResourceReader](baseUrl string, req *Request[T]) (*http.Request, error) {
+func countResourceWithName[T ResourceReader](ctx context.Context, client *Client, name string) (T, error) {
+	req := Request[T]{
+		Method:       http.MethodGet,
+		ResourceName: name,
+		Action:       ActionCount,
+	}
+
+	var res *Response[T]
+	var err error
+	if res, err = executeNitroRequest(ctx, client, &req); err != nil {
+		return *new(T), err
+	}
+
+	return res.Data[0], nil
+}
+
+func createHttpRequest[T ResourceReader](baseUrl string, req *Request[T], mode SerializationMode) (*http.Request, error) {
 	var (
 		err  error
 		body io.Reader
@@ -85,7 +101,7 @@ func createHttpRequest[T ResourceReader](baseUrl string, req *Request[T]) (*http
 
 		tee := io.TeeReader(body, buf)
 
-		if err = req.ValidateData(tee); err != nil {
+		if err = req.ValidateData(tee, mode); err != nil {
 			return nil, ClientCreateHttpRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_CREATEHTTPREQUEST_ERROR_MESSAGE+" for %s: %s", req.GetResourceTypeName(), err.Error())).WithError(err)
 		}
 	}
@@ -145,7 +161,7 @@ func deleteResource[T ResourceReader](ctx context.Context, client *Client, name 
 	return nil
 }
 
-func deserializeResponse[T ResourceReader](res *http.Response) (*Response[T], error) {
+func deserializeResponse[T ResourceReader](res *http.Response, mode SerializationMode) (*Response[T], error) {
 	var (
 		err error
 		r   Response[T]
@@ -206,7 +222,7 @@ func deserializeResponse[T ResourceReader](res *http.Response) (*Response[T], er
 	}
 
 	// Extract the data for the resource and convert to a struct for the resource type
-	if err = r.ExtractData(bodyMap[t.GetTypeName()]); err != nil {
+	if err = r.ExtractData(bodyMap[t.GetTypeName()], mode); err != nil {
 		return &r, ResourceDeserializationError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_DESERIALIZATION_ERROR_MESSAGE + ": failed to extract data: " + err.Error())).WithError(err)
 	}
 
@@ -262,7 +278,7 @@ func executeNitroRequest[T ResourceReader](ctx context.Context, c *Client, r *Re
 		res *http.Response
 	)
 
-	if req, err = createHttpRequest[T](c.BaseUrl(), r); err != nil {
+	if req, err = createHttpRequest[T](c.BaseUrl(), r, c.mode); err != nil {
 		return nil, ClientExecuteRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE + ": " + err.Error())).WithError(err)
 	}
 
@@ -286,14 +302,33 @@ func executeNitroRequest[T ResourceReader](ctx context.Context, c *Client, r *Re
 		return nitroRes, nil
 	}
 
-	if nitroRes, err = deserializeResponse[T](res); err != nil {
+	if nitroRes, err = deserializeResponse[T](res, c.mode); err != nil {
 		return nil, ClientExecuteRequestError.WithMessage(fmt.Sprintf(NSGO_CLIENT_EXECUTEREQUEST_ERROR_MESSAGE + ": " + err.Error())).WithError(err)
 	}
 
 	return nitroRes, nil
 }
 
-func getResource[T ResourceReader](ctx context.Context, client *Client, name string, attributes []string) (T, error) {
+func getResource[T ResourceReader](ctx context.Context, client *Client, attributes []string) (T, error) {
+	req := Request[T]{
+		Method:     http.MethodGet,
+		Attributes: attributes,
+	}
+
+	var res *Response[T]
+	var err error
+	if res, err = executeNitroRequest(ctx, client, &req); err != nil {
+		return *new(T), err
+	}
+
+	if res.ErrorCode != 0 {
+		return *new(T), ApiError.WithCode(res.ErrorCode).WithMessage(res.Message)
+	}
+
+	return res.Data[0], nil
+}
+
+func getResourceWithName[T ResourceReader](ctx context.Context, client *Client, name string, attributes []string) (T, error) {
 	req := Request[T]{
 		Method:       http.MethodGet,
 		ResourceName: name,
@@ -367,7 +402,14 @@ func listResourceWithName[T ResourceReader](ctx context.Context, client *Client,
 	return res.Data, nil
 }
 
-func mapToStruct[T any](t *T, v map[string]interface{}) error {
+type SerializationMode bool
+
+const (
+	StrictSerializationMode SerializationMode = true
+	LooseSerializationMode  SerializationMode = false
+)
+
+func mapToStruct[T any](t *T, v map[string]interface{}, mode SerializationMode) error {
 	var err error
 	var jsonData []byte
 
@@ -379,7 +421,15 @@ func mapToStruct[T any](t *T, v map[string]interface{}) error {
 	}
 
 	// Convert json to struct of type T
-	err = json.Unmarshal(jsonData, t)
+	switch mode {
+	case StrictSerializationMode:
+		decoder := json.NewDecoder(bytes.NewReader(jsonData))
+		decoder.DisallowUnknownFields()
+		err = decoder.Decode(t)
+	case LooseSerializationMode:
+		err = json.Unmarshal(jsonData, t)
+	}
+
 	if err != nil {
 		return ResourceDeserializationError.WithMessage(fmt.Sprintf(NSGO_RESOURCE_SERIALIZATION_ERROR_MESSAGE + ": marshal json to struct of " + rt.String() + " failed: " + err.Error())).WithError(err)
 	}

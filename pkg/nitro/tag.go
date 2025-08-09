@@ -10,7 +10,7 @@ type Tag struct {
 	Permission string `json:"permission"`
 }
 
-func GetNitroTags[T ResourceReader]() (map[string]Tag, error) {
+func GetNitroTags[T ResourceReader](mode SerializationMode) (map[string]Tag, error) {
 	var err error
 
 	r := *new(T)
@@ -40,7 +40,7 @@ func GetNitroTags[T ResourceReader]() (map[string]Tag, error) {
 		}
 
 		var parsedTag Tag
-		parsedTag, err = parseNitroTag(nitroTag)
+		parsedTag, err = parseNitroTag(nitroTag, mode)
 		if err != nil {
 			return m, err
 		}
@@ -51,7 +51,7 @@ func GetNitroTags[T ResourceReader]() (map[string]Tag, error) {
 	return m, err
 }
 
-func parseNitroTag(tag string) (Tag, error) {
+func parseNitroTag(tag string, mode SerializationMode) (Tag, error) {
 	// Tag Format: name=value,name=value,...
 	var (
 		err      error
@@ -75,7 +75,7 @@ func parseNitroTag(tag string) (Tag, error) {
 		m[e[0]] = e[1]
 	}
 
-	err = mapToStruct[Tag](&t, m)
+	err = mapToStruct[Tag](&t, m, mode)
 	if err != nil {
 		return t, ResourceTagError.WithMessage(fmt.Sprintf("Cannot convert map to tag %s", tag)).WithError(err)
 	}

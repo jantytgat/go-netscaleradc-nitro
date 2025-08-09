@@ -26,7 +26,7 @@ func (h ResponderPolicyHandler) Delete(ctx context.Context, policyName string) e
 }
 
 func (h ResponderPolicyHandler) Get(ctx context.Context, name string, attributes []string) (config.ResponderPolicy, error) {
-	return getResource[config.ResponderPolicy](ctx, h.client, name, attributes)
+	return getResourceWithName[config.ResponderPolicy](ctx, h.client, name, attributes)
 }
 
 func (h ResponderPolicyHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.ResponderPolicy, error) {

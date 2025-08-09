@@ -42,7 +42,7 @@ func (h SystemBackupHandler) Download(ctx context.Context, systemBackupName stri
 }
 
 func (h SystemBackupHandler) Get(ctx context.Context, systemBackupName string, attributes []string) (config.SystemBackup, error) {
-	return getResource[config.SystemBackup](ctx, h.client, systemBackupName, attributes)
+	return getResourceWithName[config.SystemBackup](ctx, h.client, systemBackupName, attributes)
 }
 
 func (h SystemBackupHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.SystemBackup, error) {

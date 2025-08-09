@@ -34,7 +34,7 @@ func (h ServerHandler) Enable(ctx context.Context, serverName string) error {
 }
 
 func (h ServerHandler) Get(ctx context.Context, serverName string, attributes []string) (config.Server, error) {
-	return getResource[config.Server](ctx, h.client, serverName, attributes)
+	return getResourceWithName[config.Server](ctx, h.client, serverName, attributes)
 }
 
 func (h ServerHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.Server, error) {

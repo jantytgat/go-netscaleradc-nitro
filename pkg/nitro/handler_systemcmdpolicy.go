@@ -26,7 +26,7 @@ func (h SystemCmdPolicyHandler) Delete(ctx context.Context, policyName string) e
 }
 
 func (h SystemCmdPolicyHandler) Get(ctx context.Context, policyName string, attributes []string) (config.SystemCmdPolicy, error) {
-	return getResource[config.SystemCmdPolicy](ctx, h.client, policyName, attributes)
+	return getResourceWithName[config.SystemCmdPolicy](ctx, h.client, policyName, attributes)
 }
 
 func (h SystemCmdPolicyHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.SystemCmdPolicy, error) {

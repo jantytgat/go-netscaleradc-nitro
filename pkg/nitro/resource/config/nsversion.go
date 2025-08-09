@@ -11,10 +11,20 @@ const (
 
 var reVersion = regexp.MustCompile(validVersion)
 
+var NsVersionFieldNames = struct {
+	InstalledVersion string
+	Mode             string
+	Version          string
+}{
+	InstalledVersion: "installedversion",
+	Mode:             "mode",
+	Version:          "version",
+}
+
 type NsVersion struct {
 	InstalledVersion bool   `json:"installedversion,omitempty" nitro:"permission=readwrite"`
-	Version          string `json:"version,omitempty" nitro:"permission=readonly"`
 	Mode             string `json:"mode,omitempty" nitro:"permission=readonly"`
+	Version          string `json:"version,omitempty" nitro:"permission=readonly"`
 }
 
 func (r NsVersion) GetTypeName() string {
@@ -35,7 +45,7 @@ func (r NsVersion) Details() (NsVersionDetail, error) {
 }
 
 type NsVersionDetail struct {
-	Version string
 	Build   string
 	Date    string
+	Version string
 }

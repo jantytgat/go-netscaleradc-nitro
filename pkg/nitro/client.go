@@ -19,7 +19,7 @@ const (
 	NSGO_CLIENT_DEFAULT_CONTENTTYPE_HEADER = "application/json"
 )
 
-func NewClient(name string, address string, credentials Credentials, settings ConnectionSettings) (*Client, error) {
+func NewClient(name string, address string, credentials Credentials, settings ConnectionSettings, mode SerializationMode) (*Client, error) {
 	var (
 		err     error
 		client  *Client
@@ -48,6 +48,7 @@ func NewClient(name string, address string, credentials Credentials, settings Co
 			Timeout: timeout,
 		},
 		settings:   settings,
+		mode:       mode,
 		isLoggedIn: false,
 	}
 
@@ -71,13 +72,14 @@ type Client struct {
 	address     string
 	credentials Credentials
 	settings    ConnectionSettings
+	mode        SerializationMode
 	isLoggedIn  bool
 
 	// Resource Handlers
 	common                    handler
 	CsVserver                 *CsVserverHandler
-	DnsAddRec                 *DnsAddRecHandler
-	DnsTxtRec                 *DnsTxtRecHandler
+	DnsAddressRecord          *DnsAddressRecordHandler
+	DnsTxtRecord              *DnsTxtRecordHandler
 	HaFailOver                *HaFailOverHandler
 	HaNode                    *HaNodeHandler
 	LbVserver                 *LbVserverHandler
@@ -87,6 +89,8 @@ type Client struct {
 	ResponderAction           *ResponderActionHandler
 	ResponderPolicy           *ResponderPolicyHandler
 	Server                    *ServerHandler
+	Service                   *ServiceHandler
+	ServiceGroup              *ServiceGroupHandler
 	SslVserver                *SslVserverHandler
 	SystemBackup              *SystemBackupHandler
 	SystemCmdPolicy           *SystemCmdPolicyHandler
@@ -119,7 +123,7 @@ func (c *Client) Login() error {
 		}},
 	}
 
-	req, err = createHttpRequest[config.Login](c.BaseUrl(), &nitroReq)
+	req, err = createHttpRequest[config.Login](c.BaseUrl(), &nitroReq, c.mode)
 	if err != nil {
 		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
@@ -132,7 +136,7 @@ func (c *Client) Login() error {
 		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while executing http request")).WithError(err)
 	}
 
-	_, err = deserializeResponse[config.Login](res)
+	_, err = deserializeResponse[config.Login](res, c.mode)
 	if err != nil {
 		return ClientLoginError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGIN_ERROR_MESSAGE + " while deserializing response")).WithError(err)
 	}
@@ -164,7 +168,7 @@ func (c *Client) Logout() error {
 		Data:   []config.Logout{{}},
 	}
 
-	req, err = createHttpRequest[config.Logout](c.BaseUrl(), &nitroReq)
+	req, err = createHttpRequest[config.Logout](c.BaseUrl(), &nitroReq, c.mode)
 	if err != nil {
 		return ClientLogoutError.WithMessage(fmt.Sprintf(NSGO_CLIENT_LOGOUT_ERROR_MESSAGE + " while creating http request")).WithError(err)
 	}
@@ -208,8 +212,8 @@ func (c *Client) initialize() {
 	c.common = handler{client: c}
 
 	c.CsVserver = (*CsVserverHandler)(&c.common)
-	c.DnsAddRec = (*DnsAddRecHandler)(&c.common)
-	c.DnsTxtRec = (*DnsTxtRecHandler)(&c.common)
+	c.DnsAddressRecord = (*DnsAddressRecordHandler)(&c.common)
+	c.DnsTxtRecord = (*DnsTxtRecordHandler)(&c.common)
 	c.HaFailOver = (*HaFailOverHandler)(&c.common)
 	c.HaNode = (*HaNodeHandler)(&c.common)
 	c.LbVserver = (*LbVserverHandler)(&c.common)
@@ -219,6 +223,8 @@ func (c *Client) initialize() {
 	c.ResponderAction = (*ResponderActionHandler)(&c.common)
 	c.ResponderPolicy = (*ResponderPolicyHandler)(&c.common)
 	c.Server = (*ServerHandler)(&c.common)
+	c.Service = (*ServiceHandler)(&c.common)
+	c.ServiceGroup = (*ServiceGroupHandler)(&c.common)
 	c.SslVserver = (*SslVserverHandler)(&c.common)
 	c.SystemBackup = (*SystemBackupHandler)(&c.common)
 	c.SystemCmdPolicy = (*SystemCmdPolicyHandler)(&c.common)

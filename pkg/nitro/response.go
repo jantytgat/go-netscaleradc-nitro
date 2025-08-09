@@ -17,7 +17,7 @@ func (n *Response[T]) GetResourceTypeName() string {
 	return t.GetTypeName()
 }
 
-func (n *Response[T]) ExtractData(data interface{}) error {
+func (n *Response[T]) ExtractData(data interface{}, mode SerializationMode) error {
 	var (
 		err error
 		m   []interface{}
@@ -35,7 +35,7 @@ func (n *Response[T]) ExtractData(data interface{}) error {
 
 	for _, i := range m {
 		var d T
-		if err = mapToStruct(&d, i.(map[string]interface{})); err != nil {
+		if err = mapToStruct(&d, i.(map[string]interface{}), mode); err != nil {
 			return ResourceExtractionError.WithMessage(fmt.Sprintf("failed to extract data for %s", d.GetTypeName()+": "+err.Error())).WithError(err)
 		}
 		n.Data = append(n.Data, d)

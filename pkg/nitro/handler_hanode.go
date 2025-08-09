@@ -45,7 +45,7 @@ func (h HaNodeHandler) FailOver(ctx context.Context, force bool) (config.HaFailo
 }
 
 func (h HaNodeHandler) Get(ctx context.Context, haNodeId int, attributes []string) (config.HaNode, error) {
-	return getResource[config.HaNode](ctx, h.client, strconv.Itoa(haNodeId), attributes)
+	return getResourceWithName[config.HaNode](ctx, h.client, strconv.Itoa(haNodeId), attributes)
 }
 
 func (h HaNodeHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.HaNode, error) {

@@ -45,7 +45,7 @@ func (h PolicyStringmapHandler) Delete(ctx context.Context, stringmapName string
 }
 
 func (h PolicyStringmapHandler) Get(ctx context.Context, stringmapName string, attributes []string) (config.PolicyStringmap, error) {
-	return getResource[config.PolicyStringmap](ctx, h.client, stringmapName, attributes)
+	return getResourceWithName[config.PolicyStringmap](ctx, h.client, stringmapName, attributes)
 }
 
 func (h PolicyStringmapHandler) GetBindings(ctx context.Context, stringmapName string, attributes []string, filter map[string]string) ([]config.PolicyStringmapPatternBinding, error) {

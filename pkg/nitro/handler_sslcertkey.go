@@ -58,15 +58,15 @@ func (h SslCertKeyHandler) Delete(ctx context.Context, sslCertKeyName string) er
 }
 
 func (h SslCertKeyHandler) Get(ctx context.Context, sslCertKeyName string, attributes []string) (config.SslCertKey, error) {
-	return getResource[config.SslCertKey](ctx, h.client, sslCertKeyName, attributes)
+	return getResourceWithName[config.SslCertKey](ctx, h.client, sslCertKeyName, attributes)
 }
 
 func (h SslCertKeyHandler) GetSslServiceBinding(ctx context.Context, sslServiceName string, attributes []string) (config.SslCertKeyServiceBinding, error) {
-	return getResource[config.SslCertKeyServiceBinding](ctx, h.client, sslServiceName, attributes)
+	return getResourceWithName[config.SslCertKeyServiceBinding](ctx, h.client, sslServiceName, attributes)
 }
 
 func (h SslCertKeyHandler) GetSslVserverBinding(ctx context.Context, sslVserverName string, attributes []string) (config.SslCertKeySslVserverBinding, error) {
-	return getResource[config.SslCertKeySslVserverBinding](ctx, h.client, sslVserverName, attributes)
+	return getResourceWithName[config.SslCertKeySslVserverBinding](ctx, h.client, sslVserverName, attributes)
 }
 
 func (h SslCertKeyHandler) Link(ctx context.Context, sslCertKeyName, caSslCertKeyName string) error {

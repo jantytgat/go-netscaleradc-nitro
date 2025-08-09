@@ -26,7 +26,7 @@ func (h SystemUserHandler) Delete(ctx context.Context, username string) error {
 }
 
 func (h SystemUserHandler) Get(ctx context.Context, username string, attributes []string) (config.SystemUser, error) {
-	return getResource[config.SystemUser](ctx, h.client, username, attributes)
+	return getResourceWithName[config.SystemUser](ctx, h.client, username, attributes)
 }
 
 func (h SystemUserHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.SystemUser, error) {
