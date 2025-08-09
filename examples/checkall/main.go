@@ -10,7 +10,6 @@ import (
 
 	"github.com/jantytgat/go-netscaleradc-nitro/pkg/nitro"
 	"github.com/jantytgat/go-netscaleradc-nitro/pkg/nitro/resource/config"
-	"github.com/jantytgat/go-netscaleradc-nitro/pkg/nitro/resource/stat"
 )
 
 var (
@@ -115,9 +114,9 @@ func main() {
 	if len(dnsAddRecs) != int(dnsAddRecs_count) {
 		panic("number of csv. expected " + fmt.Sprint(len(dnsAddRecs)))
 	}
-	for _, dnsAddRec := range dnsAddRecs {
-		fmt.Println(dnsAddRec)
-	}
+	// for _, dnsAddRec := range dnsAddRecs {
+	// 	fmt.Println(dnsAddRec)
+	// }
 
 	// DnsTxtRec
 	var dnsTxtRecs []config.DnsAddressRecord
@@ -131,9 +130,9 @@ func main() {
 	if len(dnsTxtRecs) != int(dnsTxtRecs_count) {
 		panic("number of csv. expected " + fmt.Sprint(len(dnsTxtRecs)))
 	}
-	for _, dnsTxtRec := range dnsTxtRecs {
-		fmt.Println(dnsTxtRec)
-	}
+	// for _, dnsTxtRec := range dnsTxtRecs {
+	// 	fmt.Println(dnsTxtRec)
+	// }
 
 	// HaNode
 	var hanodes []config.HaNode
@@ -177,11 +176,11 @@ func main() {
 	}
 
 	// nsconfig
-	var nsconfig config.NsConfig
-	if nsconfig, err = client.NsConfig.Get(ctx, nil); err != nil {
+	// var nsconfig config.NsConfig
+	if _, err = client.NsConfig.Get(ctx, nil); err != nil {
 		panic(err)
 	}
-	fmt.Println(nsconfig)
+	// fmt.Println(nsconfig)
 
 	// nsversion
 	// var nsversion config.NsVersionDetail
@@ -202,13 +201,13 @@ func main() {
 		panic("number of policy stringmap expected " + fmt.Sprint(len(psms)))
 	}
 	for _, psm := range psms {
-		var psm_bindings []config.PolicyStringmapPatternBinding
-		if psm_bindings, err = client.PolicyStringmap.GetBindings(ctx, psm.Name, nil, nil); err != nil {
+		// var psm_bindings []config.PolicyStringmapPatternBinding
+		if _, err = client.PolicyStringmap.GetBindings(ctx, psm.Name, nil, nil); err != nil {
 			panic(err)
 		}
-		for _, psm_binding := range psm_bindings {
-			fmt.Println(psm_binding)
-		}
+		// for _, psm_binding := range psm_bindings {
+		// 	fmt.Println(psm_binding)
+		// }
 	}
 
 	// Responder Action
@@ -236,14 +235,12 @@ func main() {
 	if len(respol) != int(respol_count) {
 		panic("number of responderpolicy expected " + fmt.Sprint(len(respol)))
 	}
-	os.Exit(0)
 
 	// Server
 	var srvs []config.Server
 	if srvs, err = client.Server.List(ctx, nil, nil); err != nil {
 		panic(err)
 	}
-
 	var srv_count float64
 	if srv_count, err = client.Server.Count(ctx); err != nil {
 		panic(err)
@@ -254,48 +251,46 @@ func main() {
 
 	var svgs []config.ServiceGroup
 	if svgs, err = client.ServiceGroup.List(ctx, nil, nil); err != nil {
-		fmt.Println(err)
-		fmt.Println(errors.Unwrap(err))
-		return
+		panic(err)
 	}
 	for _, svg := range svgs {
-		fmt.Println(svg)
-		var svgstat stat.ServiceGroup
-		if svgstat, err = client.ServiceGroup.Stats(ctx, svg.Name, nil); err != nil {
-			fmt.Println(errors.Unwrap(err))
-			return
-		}
-		fmt.Println(svgstat)
-
-		var countsvgbindings float64
-		if countsvgbindings, err = client.ServiceGroup.CountServiceGroupMemberBindings(ctx, svg.Name); err != nil {
-			fmt.Println(errors.Unwrap(err))
-			return
+		// var svgstat stat.ServiceGroup
+		if _, err = client.ServiceGroup.Stats(ctx, svg.Name, nil); err != nil {
+			panic(err)
 		}
 
-		var svgbindings []config.ServiceGroupServiceGroupMemberBinding
-		if svgbindings, err = client.ServiceGroup.GetServiceGroupMemberBindings(ctx, svg.Name, nil, nil); err != nil {
-			fmt.Println(errors.Unwrap(err))
-			return
+		var svg_memberbindings []config.ServiceGroupServiceGroupMemberBinding
+		if svg_memberbindings, err = client.ServiceGroup.GetServiceGroupMemberBindings(ctx, svg.Name, nil, nil); err != nil {
+			panic(err)
 		}
-		for _, svgbinding := range svgbindings {
-			fmt.Println(svgbinding)
+		var svg_memberbindings_count float64
+		if svg_memberbindings_count, err = client.ServiceGroup.CountServiceGroupMemberBindings(ctx, svg.Name); err != nil {
+			panic(err)
 		}
-		fmt.Println("Total Bindings", countsvgbindings, len(svgbindings), "\n")
+		if len(svg_memberbindings) != int(svg_memberbindings_count) {
+			panic("number of svg memberbindings expected " + fmt.Sprint(len(svg_memberbindings)))
+		}
 	}
 
+	// Service
 	var svcs []config.Service
 	if svcs, err = client.Service.List(ctx, nil, nil); err != nil {
-		fmt.Println(errors.Unwrap(err))
+		panic(err)
+	}
+	var svc_count float64
+	if svc_count, err = client.Service.Count(ctx); err != nil {
+		panic(err)
+	}
+	if len(svcs) != int(svc_count) {
+		panic("number of services expected " + fmt.Sprint(len(svcs)))
 	}
 	for _, svc := range svcs {
-		fmt.Println(svc, "\n")
-
-		var svcstat stat.Service
-		if svcstat, err = client.Service.Stats(ctx, svc.Name, nil); err != nil {
-			fmt.Println(errors.Unwrap(err))
-			return
+		// var svcstat stat.Service
+		if _, err = client.Service.Stats(ctx, svc.Name, nil); err != nil {
+			panic(err)
 		}
-		fmt.Println(svcstat, "\n")
 	}
+
+	fmt.Println("Done.")
+	os.Exit(0)
 }
