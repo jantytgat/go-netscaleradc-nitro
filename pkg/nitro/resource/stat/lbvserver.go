@@ -2,7 +2,7 @@ package stat
 
 type LbVserver struct {
 	Name                                  string  `json:"name,omitempty" nitro:"permission=readwrite"`
-	ClearState                            string  `json:"clearstats,omitempty" nitro:"permission=readwrite"`
+	ClearStats                            string  `json:"clearstats,omitempty" nitro:"permission=readwrite"`
 	SortBy                                string  `json:"sortby,omitempty" nitro:"permission=readwrite"`
 	SortOrder                             string  `json:"sortorder,omitempty" nitro:"permission=readwrite"`
 	CurrentClientConnections              string  `json:"curclntconnections,omitempty" nitro:"permission=readonly"`
