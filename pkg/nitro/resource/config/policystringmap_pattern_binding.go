@@ -1,8 +1,18 @@
 package config
 
+var PolicyStringmapPatternBindingFieldNames = struct {
+	Key   string
+	Name  string
+	Value string
+}{
+	Key:   "key",
+	Name:  "name",
+	Value: "value",
+}
+
 type PolicyStringmapPatternBinding struct {
-	Name  string `json:"name,omitempty" nitro:"permission=readwrite"`
 	Key   string `json:"key,omitempty" nitro:"permission=readwrite"`
+	Name  string `json:"name,omitempty" nitro:"permission=readwrite"`
 	Value string `json:"value,omitempty" nitro:"permission=readwrite"`
 }
 
