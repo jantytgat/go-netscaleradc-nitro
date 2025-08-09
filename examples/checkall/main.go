@@ -43,7 +43,9 @@ func main() {
 			fmt.Println("NITRO_ENV_USERNAME:", NITRO_ENV_USERNAME)
 		case 3:
 			NITRO_ENV_PASSWORD = values[1]
-			fmt.Println("NITRO_ENV_PASSWORD:", NITRO_ENV_PASSWORD)
+			if NITRO_ENV_PASSWORD == "" {
+				panic(errors.New("NITRO_ENV_PASSWORD is empty"))
+			}
 		}
 		line++
 	}
@@ -116,22 +118,25 @@ func main() {
 			panic(err)
 		}
 	}
-
 	var primary bool
 	if primary, err = client.IsPrimaryNode(ctx); err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(primary)
-
-	var srv []config.Server
-	if srv, err = client.Server.List(ctx, []string{"name"}, nil); err != nil {
-		fmt.Println(err)
-		fmt.Println(errors.Unwrap(err))
-	}
-	for _, server := range srv {
-		fmt.Println(server)
+		panic(err)
 	}
 
+	// Server
+	var srvs []config.Server
+	if srvs, err = client.Server.List(ctx, nil, nil); err != nil {
+		panic(err)
+	}
+
+	var srv_count float64
+	if srv_count, err = client.Server.Count(ctx); err != nil {
+		panic(err)
+	}
+	if len(srvs) != int(srv_count) {
+		panic("number of servers expected " + fmt.Sprint(len(srvs)))
+	}
+	os.Exit(0)
 	var cfg config.NsConfig
 	if cfg, err = client.NsConfig.Get(ctx, nil); err != nil {
 		fmt.Println(err)
