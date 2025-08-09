@@ -89,6 +89,8 @@ type Client struct {
 	ResponderAction           *ResponderActionHandler
 	ResponderPolicy           *ResponderPolicyHandler
 	Server                    *ServerHandler
+	Service                   *ServiceHandler
+	ServiceGroup              *ServiceGroupHandler
 	SslVserver                *SslVserverHandler
 	SystemBackup              *SystemBackupHandler
 	SystemCmdPolicy           *SystemCmdPolicyHandler
@@ -221,6 +223,8 @@ func (c *Client) initialize() {
 	c.ResponderAction = (*ResponderActionHandler)(&c.common)
 	c.ResponderPolicy = (*ResponderPolicyHandler)(&c.common)
 	c.Server = (*ServerHandler)(&c.common)
+	c.Service = (*ServiceHandler)(&c.common)
+	c.ServiceGroup = (*ServiceGroupHandler)(&c.common)
 	c.SslVserver = (*SslVserverHandler)(&c.common)
 	c.SystemBackup = (*SystemBackupHandler)(&c.common)
 	c.SystemCmdPolicy = (*SystemCmdPolicyHandler)(&c.common)
