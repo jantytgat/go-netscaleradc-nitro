@@ -10,9 +10,9 @@ var ServiceFieldNames = struct {
 	CurrentServerConnections              string
 	Curtflags                             string
 	FrustratingTimeToLastByteTransactions string
+	HttpMaxHeaderFieldLengthExceededCount string
 	HttpMaxHeaderSizePacketsCount         string
 	MaxClients                            string
-	MaxHttpHeaderFieldLengthExceededCount string
 	MaxOutOfOrderPacketsCount             string
 	Name                                  string
 	PrimaryIpAddress                      string
@@ -48,9 +48,9 @@ var ServiceFieldNames = struct {
 	CurrentServerConnections:              "cursrvrconnections",
 	Curtflags:                             "curtflags",
 	FrustratingTimeToLastByteTransactions: "frustratingttlbtransactions",
+	HttpMaxHeaderFieldLengthExceededCount: "httpmaxhdrfldlenpkts",
 	HttpMaxHeaderSizePacketsCount:         "httpmaxhdrszpkts",
 	MaxClients:                            "maxclients",
-	MaxHttpHeaderFieldLengthExceededCount: "httpmaxhdrfldlenpkts",
 	MaxOutOfOrderPacketsCount:             "tcpmaxooopkts",
 	Name:                                  "name",
 	PrimaryIpAddress:                      "primaryipaddress",
@@ -88,9 +88,9 @@ type Service struct {
 	CurrentServerConnections              string  `json:"cursrvrconnections,omitempty" nitro:"permission=readonly"`
 	Curtflags                             string  `json:"curtflags,omitempty" nitro:"permission=readonly"`
 	FrustratingTimeToLastByteTransactions string  `json:"frustratingttlbtransactions,omitempty" nitro:"permission=readonly"`
+	HttpMaxHeaderFieldLengthExceededCount string  `json:"httpmaxhdrfldlenpkts,omitempty" nitro:"permission=readonly"`
 	HttpMaxHeaderSizePacketsCount         string  `json:"httpmaxhdrszpkts,omitempty" nitro:"permission=readonly"`
 	MaxClients                            string  `json:"maxclients,omitempty" nitro:"permission=readonly"`
-	MaxHttpHeaderFieldLengthExceededCount string  `json:"httpmaxhdrfldlenpkts,omitempty" nitro:"permission=readonly"`
 	MaxOutOfOrderPacketsCount             string  `json:"tcpmaxooopkts,omitempty" nitro:"permission=readonly"`
 	Name                                  string  `json:"name,omitempty" nitro:"permission=readwrite"`
 	PrimaryIpAddress                      string  `json:"primaryipaddress,omitempty" nitro:"permission=readonly"`
