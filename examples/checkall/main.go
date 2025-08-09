@@ -152,8 +152,8 @@ func main() {
 			panic(err)
 		}
 	}
-	var primary bool
-	if primary, err = client.IsPrimaryNode(ctx); err != nil {
+	// var primary bool
+	if _, err = client.IsPrimaryNode(ctx); err != nil {
 		panic(err)
 	}
 
@@ -184,11 +184,59 @@ func main() {
 	fmt.Println(nsconfig)
 
 	// nsversion
-	var nsversion config.NsVersionDetail
-	if nsversion, err = client.NsVersion.Get(ctx); err != nil {
+	// var nsversion config.NsVersionDetail
+	if _, err = client.NsVersion.Get(ctx); err != nil {
 		panic(err)
 	}
-	fmt.Println(nsversion)
+
+	// Policystringmap
+	var psms []config.PolicyStringmap
+	if psms, err = client.PolicyStringmap.List(ctx, nil, nil); err != nil {
+		panic(err)
+	}
+	var psms_count float64
+	if psms_count, err = client.PolicyStringmap.Count(ctx); err != nil {
+		panic(err)
+	}
+	if len(psms) != int(psms_count) {
+		panic("number of policy stringmap expected " + fmt.Sprint(len(psms)))
+	}
+	for _, psm := range psms {
+		var psm_bindings []config.PolicyStringmapPatternBinding
+		if psm_bindings, err = client.PolicyStringmap.GetBindings(ctx, psm.Name, nil, nil); err != nil {
+			panic(err)
+		}
+		for _, psm_binding := range psm_bindings {
+			fmt.Println(psm_binding)
+		}
+	}
+
+	// Responder Action
+	var resacts []config.ResponderAction
+	if resacts, err = client.ResponderAction.List(ctx, nil, nil); err != nil {
+		panic(err)
+	}
+	var resact_count float64
+	if resact_count, err = client.ResponderAction.Count(ctx); err != nil {
+		panic(err)
+	}
+	if len(resacts) != int(resact_count) {
+		panic("number of responderactions expected " + fmt.Sprint(len(resacts)))
+	}
+
+	// Responder Policy
+	var respol []config.ResponderPolicy
+	if respol, err = client.ResponderPolicy.List(ctx, nil, nil); err != nil {
+		panic(err)
+	}
+	var respol_count float64
+	if respol_count, err = client.ResponderPolicy.Count(ctx); err != nil {
+		panic(err)
+	}
+	if len(respol) != int(respol_count) {
+		panic("number of responderpolicy expected " + fmt.Sprint(len(respol)))
+	}
+	os.Exit(0)
 
 	// Server
 	var srvs []config.Server
@@ -202,36 +250,6 @@ func main() {
 	}
 	if len(srvs) != int(srv_count) {
 		panic("number of servers expected " + fmt.Sprint(len(srvs)))
-	}
-
-	var cfg config.NsConfig
-	if cfg, err = client.NsConfig.Get(ctx, nil); err != nil {
-		fmt.Println(err)
-		fmt.Println(errors.Unwrap(err))
-	}
-	fmt.Println(cfg)
-
-	if primary && cfg.ConfigChanged {
-		if err = client.SaveConfig(ctx); err != nil {
-			fmt.Println(err)
-			fmt.Println(errors.Unwrap(err))
-		}
-	}
-
-	var version config.NsVersionDetail
-	if version, err = client.NsVersion.Get(ctx); err != nil {
-		fmt.Println(err)
-		fmt.Println(errors.Unwrap(err))
-	}
-	fmt.Println(version)
-
-	var bindings []config.PolicyStringmapPatternBinding
-	if bindings, err = client.PolicyStringmap.GetBindings(ctx, "SM_CL1009_CS_CONTROL", []string{"name", "key"}, nil); err != nil {
-		fmt.Println(err)
-		fmt.Println(errors.Unwrap(err))
-	}
-	for _, binding := range bindings {
-		fmt.Println(binding)
 	}
 
 	var svgs []config.ServiceGroup
