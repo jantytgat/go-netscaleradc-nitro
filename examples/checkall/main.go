@@ -31,21 +31,23 @@ func main() {
 	line := 0
 	for scanner.Scan() {
 		values := strings.Split(scanner.Text(), "=")
-		switch line {
-		case 0:
+		switch values[0] {
+		case "NITRO_ENV_NAME":
 			NITRO_ENV_NAME = values[1]
 			fmt.Println("NITRO_ENV_NAME:", NITRO_ENV_NAME)
-		case 1:
+		case "NITRO_ENV_ADDRESS":
 			NITRO_ENV_ADDRESS = values[1]
 			fmt.Println("NITRO_ENV_ADDRESS:", NITRO_ENV_ADDRESS)
-		case 2:
+		case "NITRO_ENV_USERNAME":
 			NITRO_ENV_USERNAME = values[1]
 			fmt.Println("NITRO_ENV_USERNAME:", NITRO_ENV_USERNAME)
-		case 3:
+		case "NITRO_ENV_PASSWORD":
 			NITRO_ENV_PASSWORD = values[1]
 			if NITRO_ENV_PASSWORD == "" {
 				panic(errors.New("NITRO_ENV_PASSWORD is empty"))
 			}
+		default:
+			panic(values)
 		}
 		line++
 	}
