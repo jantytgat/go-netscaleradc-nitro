@@ -136,7 +136,7 @@ func main() {
 	if len(srvs) != int(srv_count) {
 		panic("number of servers expected " + fmt.Sprint(len(srvs)))
 	}
-	os.Exit(0)
+
 	var cfg config.NsConfig
 	if cfg, err = client.NsConfig.Get(ctx, nil); err != nil {
 		fmt.Println(err)
