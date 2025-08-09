@@ -26,6 +26,7 @@ var CsVserverFieldNames = struct {
 	CurrentState                  string
 	DatabaseProfileName           string
 	DisablePrimaryOnDown          string
+	DnsOverHttps                  string
 	DnsProfileName                string
 	DnsRecordType                 string
 	DnsVserverName                string
@@ -34,11 +35,13 @@ var CsVserverFieldNames = struct {
 	DownstateFlush                string
 	Dtls                          string
 	GreaterThan2GBTransactions    string
+	Hits                          string
 	Homepage                      string
 	HttpProfileName               string
 	HttpRedirectUrl               string
 	IcmpVserverResponse           string
 	InsertVserverIpPort           string
+	Invoke                        string
 	Ip                            string
 	IpMask                        string
 	IpPattern                     string
@@ -64,8 +67,10 @@ var CsVserverFieldNames = struct {
 	PersistenceId                 string
 	PersistenceMask               string
 	PersistenceType               string
+	PiPolicyHits                  string
 	Port                          string
 	Precedence                    string
+	Priority                      string
 	ProbePort                     string
 	ProbeProtocol                 string
 	ProbeSuccessResponseCode      string
@@ -100,9 +105,10 @@ var CsVserverFieldNames = struct {
 	TargetVserver                 string
 	TcpProbePort                  string
 	TcpProfileName                string
-	TrafficDomain                 string
+	TicksSinceLastStateChange     string
 	Timeout                       string
 	TimeToLive                    string
+	TrafficDomain                 string
 	Type                          string
 	Url                           string
 	Value                         string
@@ -121,7 +127,7 @@ var CsVserverFieldNames = struct {
 	BackupVserver:                 "backupvserver",
 	Bindpoint:                     "bindpoint",
 	Cacheable:                     "cacheable",
-	CacheType:                     "casetype",
+	CacheType:                     "cachetype",
 	CacheVserver:                  "cachevserver",
 	CaseSensitive:                 "casesensitive",
 	ClientTimeout:                 "clttimeout",
@@ -133,6 +139,7 @@ var CsVserverFieldNames = struct {
 	CurrentState:                  "curstate",
 	DatabaseProfileName:           "dbprofilename",
 	DisablePrimaryOnDown:          "disableprimaryondown",
+	DnsOverHttps:                  "dnsoverhttps",
 	DnsProfileName:                "dnsprofilename",
 	DnsRecordType:                 "dnsrecordtype",
 	DnsVserverName:                "dnsvservername",
@@ -141,11 +148,13 @@ var CsVserverFieldNames = struct {
 	DownstateFlush:                "downstateflush",
 	Dtls:                          "dtls",
 	GreaterThan2GBTransactions:    "gt2gb",
+	Hits:                          "hits",
 	Homepage:                      "homepage",
 	HttpProfileName:               "httpprofilename",
 	HttpRedirectUrl:               "httpsredirecturl",
 	IcmpVserverResponse:           "icmpvsrresponse",
 	InsertVserverIpPort:           "insertvserveripport",
+	Invoke:                        "invoke",
 	Ip:                            "ip",
 	IpMask:                        "ipmask",
 	IpPattern:                     "ippattern",
@@ -171,8 +180,10 @@ var CsVserverFieldNames = struct {
 	PersistenceId:                 "persistenceid",
 	PersistenceMask:               "persistmask",
 	PersistenceType:               "persistencetype",
+	PiPolicyHits:                  "pipolicyhits",
 	Port:                          "port",
 	Precedence:                    "precedence",
+	Priority:                      "priority",
 	ProbePort:                     "probeport",
 	ProbeProtocol:                 "probeprotocol",
 	ProbeSuccessResponseCode:      "probesuccessresponsecode",
@@ -198,7 +209,7 @@ var CsVserverFieldNames = struct {
 	SpilloverPersistenceTimeout:   "sopersistencetimeout",
 	SpilloverThreshold:            "sothreshold",
 	State:                         "state",
-	StateChangeTimeMilliSecond:    "statechangetimsec",
+	StateChangeTimeMilliSecond:    "statechangetimemsec",
 	StateChangeTimeSeconds:        "statechangetimesec",
 	StateUpdate:                   "stateupdate",
 	Status:                        "status",
@@ -207,9 +218,10 @@ var CsVserverFieldNames = struct {
 	TargetVserver:                 "targetvserver",
 	TcpProbePort:                  "tcpprobeport",
 	TcpProfileName:                "tcpprofilename",
-	TrafficDomain:                 "td",
+	TicksSinceLastStateChange:     "tickssincelaststatechange",
 	Timeout:                       "timeout",
 	TimeToLive:                    "ttl",
+	TrafficDomain:                 "td",
 	Type:                          "type",
 	Url:                           "url",
 	Value:                         "value",
@@ -230,7 +242,7 @@ type CsVserver struct {
 	BackupVserver                 string  `json:"backupvserver,omitempty" nitro:"permission=readwrite"`
 	Bindpoint                     string  `json:"bindpoint,omitempty" nitro:"permission=readonly"`
 	Cacheable                     string  `json:"cacheable,omitempty" nitro:"permission=readwrite"`
-	CacheType                     string  `json:"casetype,omitempty" nitro:"permission=readonly"`
+	CacheType                     string  `json:"cachetype,omitempty" nitro:"permission=readonly"`
 	CacheVserver                  string  `json:"cachevserver,omitempty" nitro:"permission=readonly"`
 	CaseSensitive                 string  `json:"casesensitive,omitempty" nitro:"permission=readwrite"`
 	ClientTimeout                 string  `json:"clttimeout,omitempty" nitro:"permission=readwrite"`
@@ -242,6 +254,7 @@ type CsVserver struct {
 	CurrentState                  string  `json:"curstate,omitempty" nitro:"permission=readonly"`
 	DatabaseProfileName           string  `json:"dbprofilename,omitempty" nitro:"permission=readwrite"`
 	DisablePrimaryOnDown          string  `json:"disableprimaryondown,omitempty" nitro:"permission=readwrite"`
+	DnsOverHttps                  string  `json:"dnsoverhttps,omitempty" nitro:"permission=readwrite"`
 	DnsProfileName                string  `json:"dnsprofilename,omitempty" nitro:"permission=readwrite"`
 	DnsRecordType                 string  `json:"dnsrecordtype,omitempty" nitro:"permission=readwrite"`
 	DnsVserverName                string  `json:"dnsvservername,omitempty" nitro:"permission=readonly"`
@@ -250,11 +263,13 @@ type CsVserver struct {
 	DownstateFlush                string  `json:"downstateflush,omitempty" nitro:"permission=readwrite"`
 	Dtls                          string  `json:"dtls,omitempty" nitro:"permission=readwrite"`
 	GreaterThan2GBTransactions    string  `json:"gt2gb,omitempty" nitro:"permission=readonly"`
+	Hits                          string  `json:"hits,omitempty" nitro:"permission=readwrite"`
 	Homepage                      string  `json:"homepage,omitempty" nitro:"permission=readonly"`
 	HttpProfileName               string  `json:"httpprofilename,omitempty" nitro:"permission=readwrite"`
 	HttpRedirectUrl               string  `json:"httpsredirecturl,omitempty" nitro:"permission=readwrite"`
 	IcmpVserverResponse           string  `json:"icmpvsrresponse,omitempty" nitro:"permission=readwrite"`
 	InsertVserverIpPort           string  `json:"insertvserveripport,omitempty" nitro:"permission=readwrite"`
+	Invoke                        bool    `json:"invoke,omitempty" nitro:"permission=readwrite"`
 	Ip                            string  `json:"ip,omitempty" nitro:"permission=readonly"`
 	IpMask                        string  `json:"ipmask,omitempty" nitro:"permission=readwrite"`
 	IpPattern                     string  `json:"ippattern,omitempty" nitro:"permission=readwrite"`
@@ -280,8 +295,10 @@ type CsVserver struct {
 	PersistenceId                 float64 `json:"persistenceid,omitempty" nitro:"permission=readwrite"`
 	PersistenceMask               string  `json:"persistmask,omitempty" nitro:"permission=readwrite"`
 	PersistenceType               string  `json:"persistencetype,omitempty" nitro:"permission=readwrite"`
+	PiPolicyHits                  string  `json:"pipolicyhits,omitempty" nitro:"permission=readwrite"`
 	Port                          int     `json:"port,omitempty" nitro:"permission=readwrite"`
 	Precedence                    string  `json:"precedence,omitempty" nitro:"permission=readwrite"`
+	Priority                      string  `json:"priority,omitempty" nitro:"permission=readwrite"`
 	ProbePort                     int     `json:"probeport,omitempty" nitro:"permission=readwrite"`
 	ProbeProtocol                 string  `json:"probeprotocol,omitempty" nitro:"permission=readwrite"`
 	ProbeSuccessResponseCode      string  `json:"probesuccessresponsecode,omitempty" nitro:"permission=readwrite"`
@@ -307,7 +324,7 @@ type CsVserver struct {
 	SpilloverPersistenceTimeout   string  `json:"sopersistencetimeout,omitempty" nitro:"permission=readwrite"`
 	SpilloverThreshold            float64 `json:"sothreshold,omitempty" nitro:"permission=readwrite"`
 	State                         string  `json:"state,omitempty" nitro:"permission=readwrite"`
-	StateChangeTimeMilliSecond    string  `json:"statechangetimsec,omitempty" nitro:"permission=readonly"`
+	StateChangeTimeMilliSecond    string  `json:"statechangetimemsec,omitempty" nitro:"permission=readonly"`
 	StateChangeTimeSeconds        string  `json:"statechangetimesec,omitempty" nitro:"permission=readonly"`
 	StateUpdate                   string  `json:"stateupdate,omitempty" nitro:"permission=readwrite"`
 	Status                        int     `json:"status,omitempty" nitro:"permission=readonly"`
@@ -316,9 +333,10 @@ type CsVserver struct {
 	TargetVserver                 string  `json:"targetvserver,omitempty" nitro:"permission=readonly"`
 	TcpProbePort                  int     `json:"tcpprobeport,omitempty" nitro:"permission=readwrite"`
 	TcpProfileName                string  `json:"tcpprofilename,omitempty" nitro:"permission=readwrite"`
-	TrafficDomain                 string  `json:"td,omitempty" nitro:"permission=readwrite"`
+	TicksSinceLastStateChange     string  `json:"tickssincelaststatechange,omitempty" nitro:"permission=readonly"`
 	Timeout                       float64 `json:"timeout,omitempty" nitro:"permission=readwrite"`
 	TimeToLive                    float64 `json:"ttl,omitempty" nitro:"permission=readwrite"`
+	TrafficDomain                 string  `json:"td,omitempty" nitro:"permission=readwrite"`
 	Type                          string  `json:"type,omitempty" nitro:"permission=readonly"`
 	Url                           string  `json:"url,omitempty" nitro:"permission=readonly"`
 	Value                         string  `json:"value,omitempty" nitro:"permission=readonly"`
