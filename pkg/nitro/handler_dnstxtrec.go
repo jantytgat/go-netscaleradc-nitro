@@ -6,29 +6,29 @@ import (
 	"github.com/jantytgat/go-netscaleradc-nitro/pkg/nitro/resource/config"
 )
 
-type DnsTxtRecHandler handler
+type DnsTxtRecordHandler handler
 
-func (h DnsTxtRecHandler) Add(ctx context.Context, dnsTxtRecord config.DnsTxtRec) error {
-	return addResource[config.DnsTxtRec](ctx, h.client, dnsTxtRecord)
+func (h DnsTxtRecordHandler) Add(ctx context.Context, dnsTxtRecord config.DnsTxtRecord) error {
+	return addResource[config.DnsTxtRecord](ctx, h.client, dnsTxtRecord)
 }
 
-func (h DnsTxtRecHandler) Count(ctx context.Context) (float64, error) {
+func (h DnsTxtRecordHandler) Count(ctx context.Context) (float64, error) {
 	var err error
-	var r config.DnsTxtRec
-	if r, err = countResource[config.DnsTxtRec](ctx, h.client); err != nil {
+	var r config.DnsTxtRecord
+	if r, err = countResource[config.DnsTxtRecord](ctx, h.client); err != nil {
 		return 0, err
 	}
 	return r.Count, nil
 }
 
-func (h DnsTxtRecHandler) Delete(ctx context.Context, hostname string, recordId string) error {
-	return deleteResource[config.DnsTxtRec](ctx, h.client, hostname, map[string]string{"recordid": recordId})
+func (h DnsTxtRecordHandler) Delete(ctx context.Context, hostname string, recordId string) error {
+	return deleteResource[config.DnsTxtRecord](ctx, h.client, hostname, map[string]string{"recordid": recordId})
 }
 
-func (h DnsTxtRecHandler) Get(ctx context.Context, hostname string, attributes []string) (config.DnsTxtRec, error) {
-	return getResource[config.DnsTxtRec](ctx, h.client, hostname, attributes)
+func (h DnsTxtRecordHandler) Get(ctx context.Context, hostname string, attributes []string) (config.DnsTxtRecord, error) {
+	return getResource[config.DnsTxtRecord](ctx, h.client, hostname, attributes)
 }
 
-func (h DnsTxtRecHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.DnsTxtRec, error) {
-	return listResource[config.DnsTxtRec](ctx, h.client, attributes, filter)
+func (h DnsTxtRecordHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.DnsTxtRecord, error) {
+	return listResource[config.DnsTxtRecord](ctx, h.client, attributes, filter)
 }

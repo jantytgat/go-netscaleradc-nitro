@@ -1,5 +1,17 @@
 package stat
 
+var ServiceGroupFieldNames = struct {
+	ClearStats  string
+	Name        string
+	ServiceType string
+	State       string
+}{
+	ClearStats:  "clearstats",
+	Name:        "servicegroupname",
+	ServiceType: "servicetype",
+	State:       "state",
+}
+
 type ServiceGroup struct {
 	ClearStats  string `json:"clearstats,omitempty" nitro:"permission=readwrite"`
 	Name        string `json:"servicegroupname,omitempty" nitro:"permission=readwrite"`

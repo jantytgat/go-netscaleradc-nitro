@@ -1,5 +1,83 @@
 package stat
 
+var ServiceFieldNames = struct {
+	ActiveTransactions                    string
+	AverageServerTimeToFirstByte          string
+	ClearStats                            string
+	CurrentClientConnections              string
+	CurrentLoad                           string
+	CurrentReusePool                      string
+	CurrentServerConnections              string
+	Curtflags                             string
+	FrustratingTimeToLastByteTransactions string
+	HttpMaxHeaderSizePacketsCount         string
+	MaxClients                            string
+	MaxHttpHeaderFieldLengthExceededCount string
+	MaxOutOfOrderPacketsCount             string
+	Name                                  string
+	PrimaryIpAddress                      string
+	PrimaryPort                           string
+	RequestBytesRate                      string
+	RequestsRate                          string
+	ResponseBytesRate                     string
+	ResponsesRate                         string
+	ServerEstablishedConnections          string
+	ServiceOrder                          string
+	ServiceType                           string
+	State                                 string
+	SurgeCount                            string
+	Throughput                            string
+	ThroughputRate                        string
+	ToleratingTimeToLastByteTransactions  string
+	TotalConnectionReassemblyQueueFlush   string
+	TotalConnectionReassemblyQueueFlush75 string
+	TotalRequestBytes                     string
+	TotalRequests                         string
+	TotalResponseBytes                    string
+	TotalResponses                        string
+	TotalServerTimeToLastByteTransactions string
+	VserverServiceHits                    string
+	VserverServiceHitsRate                string
+}{
+	ActiveTransactions:                    "activetransactions",
+	AverageServerTimeToFirstByte:          "avgsvrttfb",
+	ClearStats:                            "clearstats",
+	CurrentClientConnections:              "curclntconnections",
+	CurrentLoad:                           "curload",
+	CurrentReusePool:                      "curreusepool",
+	CurrentServerConnections:              "cursrvrconnections",
+	Curtflags:                             "curtflags",
+	FrustratingTimeToLastByteTransactions: "frustratingttlbtransactions",
+	HttpMaxHeaderSizePacketsCount:         "httpmaxhdrszpkts",
+	MaxClients:                            "maxclients",
+	MaxHttpHeaderFieldLengthExceededCount: "httpmaxhdrfldlenpkts",
+	MaxOutOfOrderPacketsCount:             "tcpmaxooopkts",
+	Name:                                  "name",
+	PrimaryIpAddress:                      "primaryipaddress",
+	PrimaryPort:                           "primaryport",
+	RequestBytesRate:                      "requestbytesrate",
+	RequestsRate:                          "requestsrate",
+	ResponseBytesRate:                     "responsebytesrate",
+	ResponsesRate:                         "responsesrate",
+	ServerEstablishedConnections:          "svrestablishedconn",
+	ServiceOrder:                          "serviceorder",
+	ServiceType:                           "servicetype",
+	State:                                 "state",
+	SurgeCount:                            "surgecount",
+	Throughput:                            "throughput",
+	ThroughputRate:                        "throughputrate",
+	ToleratingTimeToLastByteTransactions:  "toleratingttlbtransactions",
+	TotalConnectionReassemblyQueueFlush:   "totalconnreassemblyqueueflush",
+	TotalConnectionReassemblyQueueFlush75: "totalconnreassemblyqueue75",
+	TotalRequestBytes:                     "totalrequestbytes",
+	TotalRequests:                         "totalrequests",
+	TotalResponseBytes:                    "totalresponsebytes",
+	TotalResponses:                        "totalresponses",
+	TotalServerTimeToLastByteTransactions: "totsvrttlbtransactions",
+	VserverServiceHits:                    "vsvrservicehits",
+	VserverServiceHitsRate:                "vsvrservicehitsrate",
+}
+
 type Service struct {
 	ActiveTransactions                    string  `json:"activetransactions,omitempty" nitro:"permission=readonly"`
 	AverageServerTimeToFirstByte          string  `json:"avgsvrttfb,omitempty" nitro:"permission=readonly"`
