@@ -70,6 +70,22 @@ func countResource[T ResourceReader](ctx context.Context, client *Client) (T, er
 	return res.Data[0], nil
 }
 
+func countResourceWithName[T ResourceReader](ctx context.Context, client *Client, name string) (T, error) {
+	req := Request[T]{
+		Method:       http.MethodGet,
+		ResourceName: name,
+		Action:       ActionCount,
+	}
+
+	var res *Response[T]
+	var err error
+	if res, err = executeNitroRequest(ctx, client, &req); err != nil {
+		return *new(T), err
+	}
+
+	return res.Data[0], nil
+}
+
 func createHttpRequest[T ResourceReader](baseUrl string, req *Request[T]) (*http.Request, error) {
 	var (
 		err  error
