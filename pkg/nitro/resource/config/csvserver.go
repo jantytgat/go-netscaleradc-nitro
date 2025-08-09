@@ -263,7 +263,7 @@ type CsVserver struct {
 	DownstateFlush                string  `json:"downstateflush,omitempty" nitro:"permission=readwrite"`
 	Dtls                          string  `json:"dtls,omitempty" nitro:"permission=readwrite"`
 	GreaterThan2GBTransactions    string  `json:"gt2gb,omitempty" nitro:"permission=readonly"`
-	Hits                          string  `json:"hits,omitempty" nitro:"permission=readwrite"`
+	Hits                          string  `json:"hits,omitempty" nitro:"permission=readonly"`
 	Homepage                      string  `json:"homepage,omitempty" nitro:"permission=readonly"`
 	HttpProfileName               string  `json:"httpprofilename,omitempty" nitro:"permission=readwrite"`
 	HttpRedirectUrl               string  `json:"httpsredirecturl,omitempty" nitro:"permission=readwrite"`
@@ -295,7 +295,7 @@ type CsVserver struct {
 	PersistenceId                 float64 `json:"persistenceid,omitempty" nitro:"permission=readwrite"`
 	PersistenceMask               string  `json:"persistmask,omitempty" nitro:"permission=readwrite"`
 	PersistenceType               string  `json:"persistencetype,omitempty" nitro:"permission=readwrite"`
-	PiPolicyHits                  string  `json:"pipolicyhits,omitempty" nitro:"permission=readwrite"`
+	PiPolicyHits                  string  `json:"pipolicyhits,omitempty" nitro:"permission=readonly"`
 	Port                          int     `json:"port,omitempty" nitro:"permission=readwrite"`
 	Precedence                    string  `json:"precedence,omitempty" nitro:"permission=readwrite"`
 	Priority                      string  `json:"priority,omitempty" nitro:"permission=readwrite"`
