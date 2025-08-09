@@ -171,9 +171,12 @@ func main() {
 		panic("number of lbvs expected " + fmt.Sprint(len(lbvs)))
 	}
 	for _, lbv := range lbvs {
-		fmt.Println(lbv)
+		if _, err = client.LbVserver.Stats(ctx, lbv.Name, nil); err != nil {
+			panic(err)
+		}
 	}
-	os.Exit(0)
+
+	// nsconfig
 
 	// Server
 	var srvs []config.Server
