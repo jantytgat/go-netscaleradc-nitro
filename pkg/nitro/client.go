@@ -78,8 +78,8 @@ type Client struct {
 	// Resource Handlers
 	common                    handler
 	CsVserver                 *CsVserverHandler
-	DnsAddRec                 *DnsAddressRecordHandler
-	DnsTxtRec                 *DnsTxtRecordHandler
+	DnsAddressRecord          *DnsAddressRecordHandler
+	DnsTxtRecord              *DnsTxtRecordHandler
 	HaFailOver                *HaFailOverHandler
 	HaNode                    *HaNodeHandler
 	LbVserver                 *LbVserverHandler
@@ -212,8 +212,8 @@ func (c *Client) initialize() {
 	c.common = handler{client: c}
 
 	c.CsVserver = (*CsVserverHandler)(&c.common)
-	c.DnsAddRec = (*DnsAddressRecordHandler)(&c.common)
-	c.DnsTxtRec = (*DnsTxtRecordHandler)(&c.common)
+	c.DnsAddressRecord = (*DnsAddressRecordHandler)(&c.common)
+	c.DnsTxtRecord = (*DnsTxtRecordHandler)(&c.common)
 	c.HaFailOver = (*HaFailOverHandler)(&c.common)
 	c.HaNode = (*HaNodeHandler)(&c.common)
 	c.LbVserver = (*LbVserverHandler)(&c.common)
