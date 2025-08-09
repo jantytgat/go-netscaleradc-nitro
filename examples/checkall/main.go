@@ -103,6 +103,38 @@ func main() {
 		}
 	}
 
+	// DnsAddRec
+	var dnsAddRecs []config.DnsAddressRecord
+	if dnsAddRecs, err = client.DnsAddressRecord.List(ctx, nil, nil); err != nil {
+		panic(err)
+	}
+	var dnsAddRecs_count float64
+	if dnsAddRecs_count, err = client.DnsAddressRecord.Count(ctx); err != nil {
+		panic(err)
+	}
+	if len(dnsAddRecs) != int(dnsAddRecs_count) {
+		panic("number of csv. expected " + fmt.Sprint(len(dnsAddRecs)))
+	}
+	for _, dnsAddRec := range dnsAddRecs {
+		fmt.Println(dnsAddRec)
+	}
+
+	// DnsTxtRec
+	var dnsTxtRecs []config.DnsAddressRecord
+	if dnsTxtRecs, err = client.DnsAddressRecord.List(ctx, nil, nil); err != nil {
+		panic(err)
+	}
+	var dnsTxtRecs_count float64
+	if dnsTxtRecs_count, err = client.DnsAddressRecord.Count(ctx); err != nil {
+		panic(err)
+	}
+	if len(dnsTxtRecs) != int(dnsTxtRecs_count) {
+		panic("number of csv. expected " + fmt.Sprint(len(dnsTxtRecs)))
+	}
+	for _, dnsTxtRec := range dnsTxtRecs {
+		fmt.Println(dnsTxtRec)
+	}
+
 	// HaNode
 	var hanodes []config.HaNode
 	if hanodes, err = client.HaNode.List(ctx, nil, nil); err != nil {
@@ -124,6 +156,24 @@ func main() {
 	if primary, err = client.IsPrimaryNode(ctx); err != nil {
 		panic(err)
 	}
+
+	// lbVserver
+	var lbvs []config.LbVserver
+
+	if lbvs, err = client.LbVserver.List(ctx, nil, nil); err != nil {
+		panic(err)
+	}
+	var lbvs_count float64
+	if lbvs_count, err = client.LbVserver.Count(ctx); err != nil {
+		panic(err)
+	}
+	if len(lbvs) != int(lbvs_count) {
+		panic("number of lbvs expected " + fmt.Sprint(len(lbvs)))
+	}
+	for _, lbv := range lbvs {
+		fmt.Println(lbv)
+	}
+	os.Exit(0)
 
 	// Server
 	var srvs []config.Server
