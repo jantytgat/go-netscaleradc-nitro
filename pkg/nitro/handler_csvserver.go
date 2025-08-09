@@ -35,7 +35,7 @@ func (h CsVserverHandler) Enable(ctx context.Context, csVserverName string) erro
 }
 
 func (h CsVserverHandler) Get(ctx context.Context, csVserverName string, attributes []string) (config.CsVserver, error) {
-	return getResource[config.CsVserver](ctx, h.client, csVserverName, attributes)
+	return getResourceWithName[config.CsVserver](ctx, h.client, csVserverName, attributes)
 }
 
 func (h CsVserverHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.CsVserver, error) {

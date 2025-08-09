@@ -19,7 +19,7 @@ func (h SslVserverHandler) Count(ctx context.Context) (float64, error) {
 }
 
 func (h SslVserverHandler) Get(ctx context.Context, sslVserverName string, attributes []string) (config.SslVserver, error) {
-	return getResource[config.SslVserver](ctx, h.client, sslVserverName, attributes)
+	return getResourceWithName[config.SslVserver](ctx, h.client, sslVserverName, attributes)
 }
 
 func (h SslVserverHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.SslVserver, error) {

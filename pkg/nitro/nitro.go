@@ -309,7 +309,26 @@ func executeNitroRequest[T ResourceReader](ctx context.Context, c *Client, r *Re
 	return nitroRes, nil
 }
 
-func getResource[T ResourceReader](ctx context.Context, client *Client, name string, attributes []string) (T, error) {
+func getResource[T ResourceReader](ctx context.Context, client *Client, attributes []string) (T, error) {
+	req := Request[T]{
+		Method:     http.MethodGet,
+		Attributes: attributes,
+	}
+
+	var res *Response[T]
+	var err error
+	if res, err = executeNitroRequest(ctx, client, &req); err != nil {
+		return *new(T), err
+	}
+
+	if res.ErrorCode != 0 {
+		return *new(T), ApiError.WithCode(res.ErrorCode).WithMessage(res.Message)
+	}
+
+	return res.Data[0], nil
+}
+
+func getResourceWithName[T ResourceReader](ctx context.Context, client *Client, name string, attributes []string) (T, error) {
 	req := Request[T]{
 		Method:       http.MethodGet,
 		ResourceName: name,

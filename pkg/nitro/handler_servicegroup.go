@@ -44,7 +44,7 @@ func (h ServiceGroupHandler) Enable(ctx context.Context, serviceGroupName string
 }
 
 func (h ServiceGroupHandler) Get(ctx context.Context, serviceGroupName string, attributes []string) (config.ServiceGroup, error) {
-	return getResource[config.ServiceGroup](ctx, h.client, serviceGroupName, attributes)
+	return getResourceWithName[config.ServiceGroup](ctx, h.client, serviceGroupName, attributes)
 }
 
 func (h ServiceGroupHandler) GetServiceGroupMemberBindings(ctx context.Context, serviceGroupName string, attributes []string, filter map[string]string) ([]config.ServiceGroupServiceGroupMemberBinding, error) {

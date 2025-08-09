@@ -51,7 +51,7 @@ func (h NsConfigHandler) Diff(ctx context.Context, config1 string, config2 strin
 }
 
 func (h NsConfigHandler) Get(ctx context.Context, attributes []string) (config.NsConfig, error) {
-	return getResource[config.NsConfig](ctx, h.client, "", attributes)
+	return getResource[config.NsConfig](ctx, h.client, attributes)
 }
 
 func (h NsConfigHandler) Save(ctx context.Context) error {

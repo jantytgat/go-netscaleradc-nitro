@@ -177,6 +177,18 @@ func main() {
 	}
 
 	// nsconfig
+	var nsconfig config.NsConfig
+	if nsconfig, err = client.NsConfig.Get(ctx, nil); err != nil {
+		panic(err)
+	}
+	fmt.Println(nsconfig)
+
+	// nsversion
+	var nsversion config.NsVersionDetail
+	if nsversion, err = client.NsVersion.Get(ctx); err != nil {
+		panic(err)
+	}
+	fmt.Println(nsversion)
 
 	// Server
 	var srvs []config.Server

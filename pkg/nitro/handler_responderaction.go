@@ -26,7 +26,7 @@ func (h ResponderActionHandler) Delete(ctx context.Context, actionName string) e
 }
 
 func (h ResponderActionHandler) Get(ctx context.Context, actionName string, attributes []string) (config.ResponderAction, error) {
-	return getResource[config.ResponderAction](ctx, h.client, actionName, attributes)
+	return getResourceWithName[config.ResponderAction](ctx, h.client, actionName, attributes)
 }
 
 func (h ResponderActionHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.ResponderAction, error) {

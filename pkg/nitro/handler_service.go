@@ -35,7 +35,7 @@ func (h ServiceHandler) Enable(ctx context.Context, serviceName string) error {
 }
 
 func (h ServiceHandler) Get(ctx context.Context, serviceName string, attributes []string) (config.Service, error) {
-	return getResource[config.Service](ctx, h.client, serviceName, attributes)
+	return getResourceWithName[config.Service](ctx, h.client, serviceName, attributes)
 }
 
 func (h ServiceHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.Service, error) {

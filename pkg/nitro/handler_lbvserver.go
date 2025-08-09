@@ -35,7 +35,7 @@ func (h LbVserverHandler) Enable(ctx context.Context, lbVserverName string) erro
 }
 
 func (h LbVserverHandler) Get(ctx context.Context, lbVserverName string, attributes []string) (config.LbVserver, error) {
-	return getResource[config.LbVserver](ctx, h.client, lbVserverName, attributes)
+	return getResourceWithName[config.LbVserver](ctx, h.client, lbVserverName, attributes)
 }
 
 func (h LbVserverHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.LbVserver, error) {

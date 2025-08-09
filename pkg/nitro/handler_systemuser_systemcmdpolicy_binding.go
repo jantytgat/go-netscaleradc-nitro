@@ -26,7 +26,7 @@ func (h SystemUserSystemCmdPolicyBindingHandler) Delete(ctx context.Context, use
 }
 
 func (h SystemUserSystemCmdPolicyBindingHandler) Get(ctx context.Context, username string, attributes []string) (config.SystemUserSystemCmdPolicyBinding, error) {
-	return getResource[config.SystemUserSystemCmdPolicyBinding](ctx, h.client, username, attributes)
+	return getResourceWithName[config.SystemUserSystemCmdPolicyBinding](ctx, h.client, username, attributes)
 }
 
 func (h SystemUserSystemCmdPolicyBindingHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.SystemUserSystemCmdPolicyBinding, error) {

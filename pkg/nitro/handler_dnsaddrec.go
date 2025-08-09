@@ -26,7 +26,7 @@ func (h DnsAddressRecordHandler) Delete(ctx context.Context, hostname string, ip
 }
 
 func (h DnsAddressRecordHandler) Get(ctx context.Context, hostname string, attributes []string) (config.DnsAddressRecord, error) {
-	return getResource[config.DnsAddressRecord](ctx, h.client, hostname, attributes)
+	return getResourceWithName[config.DnsAddressRecord](ctx, h.client, hostname, attributes)
 }
 
 func (h DnsAddressRecordHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.DnsAddressRecord, error) {
