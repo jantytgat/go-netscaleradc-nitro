@@ -1,5 +1,27 @@
 package config
 
+var SslVserverSslCertKeyBindingFieldNames = struct {
+	CertKeyName       string
+	CleartextPort     string
+	Count             string
+	CrlCheck          string
+	IsCa              string
+	OcspCheck         string
+	SkipCaName        string
+	Snicert           string
+	VirtualServerName string
+}{
+	CertKeyName:       "certkeyname",
+	CleartextPort:     "cleartextport",
+	Count:             "__count",
+	CrlCheck:          "crlcheck",
+	IsCa:              "ca",
+	OcspCheck:         "ocspcheck",
+	SkipCaName:        "skipcaname",
+	Snicert:           "snicert",
+	VirtualServerName: "vservername",
+}
+
 type SslVserverSslCertKeyBinding struct {
 	VirtualServerName string  `json:"vservername,omitempty" nitro:"permission=readwrite"`
 	CertKeyName       string  `json:"certkeyname,omitempty" nitro:"permission=readwrite"`

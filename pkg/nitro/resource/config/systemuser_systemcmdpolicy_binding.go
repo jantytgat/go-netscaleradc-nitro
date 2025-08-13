@@ -1,10 +1,22 @@
 package config
 
+var SystemUserSystemCmdPolicyBindingFieldNames = struct {
+	Count      string
+	PolicyName string
+	Priority   string
+	Username   string
+}{
+	Count:      "__count",
+	PolicyName: "policyname",
+	Priority:   "priority",
+	Username:   "username",
+}
+
 type SystemUserSystemCmdPolicyBinding struct {
-	Priority   float64 `json:"priority,omitempty" nitro:"permission=readwrite"`
-	PolicyName string  `json:"policyname,omitempty" nitro:"permission=readwrite"`
-	Username   string  `json:"username,omitempty" nitro:"permission=readwrite"`
 	Count      float64 `json:"__count,omitempty" nitro:"permission=readonly"`
+	PolicyName string  `json:"policyname,omitempty" nitro:"permission=readwrite"`
+	Priority   float64 `json:"priority,omitempty" nitro:"permission=readwrite"`
+	Username   string  `json:"username,omitempty" nitro:"permission=readwrite"`
 }
 
 func (r SystemUserSystemCmdPolicyBinding) GetTypeName() string {
