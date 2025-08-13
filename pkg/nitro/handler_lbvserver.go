@@ -38,6 +38,14 @@ func (h LbVserverHandler) Get(ctx context.Context, lbVserverName string, attribu
 	return getResourceWithName[config.LbVserver](ctx, h.client, lbVserverName, attributes)
 }
 
+func (h LbVserverHandler) GetServiceBindings(ctx context.Context, lbVserverName string, attributes []string, filter map[string]string) ([]config.LbVserverServiceBinding, error) {
+	return listResourceWithName[config.LbVserverServiceBinding](ctx, h.client, lbVserverName, attributes, filter)
+}
+
+func (h LbVserverHandler) GetServiceGroupBindings(ctx context.Context, lbVserverName string, attributes []string, filter map[string]string) ([]config.LbVserverServiceGroupBinding, error) {
+	return listResourceWithName[config.LbVserverServiceGroupBinding](ctx, h.client, lbVserverName, attributes, filter)
+}
+
 func (h LbVserverHandler) List(ctx context.Context, attributes []string, filter map[string]string) ([]config.LbVserver, error) {
 	return listResource[config.LbVserver](ctx, h.client, attributes, filter)
 }

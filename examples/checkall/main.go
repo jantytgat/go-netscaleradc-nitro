@@ -173,6 +173,14 @@ func main() {
 		if _, err = client.LbVserver.Stats(ctx, lbv.Name, nil); err != nil {
 			panic(err)
 		}
+
+		if _, err = client.LbVserver.GetServiceBindings(ctx, lbv.Name, nil, nil); err != nil {
+			panic(err)
+		}
+
+		if _, err = client.LbVserver.GetServiceGroupBindings(ctx, lbv.Name, nil, nil); err != nil {
+			panic(err)
+		}
 	}
 
 	// nsconfig
