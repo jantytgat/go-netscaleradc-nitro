@@ -190,6 +190,12 @@ func main() {
 	}
 	// fmt.Println(nsconfig)
 
+	// nsfeature
+	// var nsfeature config.NsFeature
+	if _, err = client.NsFeature.Get(ctx); err != nil {
+	}
+	// fmt.Println(nsfeature)
+
 	// nsversion
 	// var nsversion config.NsVersionDetail
 	if _, err = client.NsVersion.Get(ctx); err != nil {
