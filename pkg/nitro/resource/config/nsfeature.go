@@ -104,7 +104,7 @@ type NsFeature struct {
 	ContentFiltering           bool     `json:"cf,omitempty" nitro:"permission=readonly"`
 	ContentInspection          bool     `json:"ci,omitempty" nitro:"permission=readonly"`
 	ContentSwitching           bool     `json:"cs,omitempty" nitro:"permission=readonly"`
-	EnabledFeatures            []string `json:"feature,omitempty" nitro:"permission=readonly"`
+	EnabledFeatures            []string `json:"feature,omitempty" nitro:"permission=readwrite"`
 	ForwardProxy               bool     `json:"forwardproxy,omitempty" nitro:"permission=readonly"`
 	FrontEndOptimization       bool     `json:"feo,omitempty" nitro:"permission=readonly"`
 	GlobalServerLoadBalancing  bool     `json:"gslb,omitempty" nitro:"permission=readonly"`
