@@ -204,6 +204,13 @@ func main() {
 	}
 	// fmt.Println(nsmode)
 
+	// nssavedconfig
+	// var savedConfig string
+	if _, err = client.NsSavedConfig.Get(ctx); err != nil {
+		panic(err)
+	}
+	// fmt.Printf(savedConfig)
+
 	// nsversion
 	// var nsversion config.NsVersionDetail
 	if _, err = client.NsVersion.Get(ctx); err != nil {

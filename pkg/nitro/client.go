@@ -86,6 +86,7 @@ type Client struct {
 	NsConfig                  *NsConfigHandler
 	NsFeature                 *NsFeatureHandler
 	NsMode                    *NsModeHandler
+	NsSavedConfig             *NsSavedConfigHandler
 	NsVersion                 *NsVersionHandler
 	PolicyStringmap           *PolicyStringmapHandler
 	ResponderAction           *ResponderActionHandler
@@ -222,6 +223,7 @@ func (c *Client) initialize() {
 	c.NsConfig = (*NsConfigHandler)(&c.common)
 	c.NsFeature = (*NsFeatureHandler)(&c.common)
 	c.NsMode = (*NsModeHandler)(&c.common)
+	c.NsSavedConfig = (*NsSavedConfigHandler)(&c.common)
 	c.NsVersion = (*NsVersionHandler)(&c.common)
 	c.PolicyStringmap = (*PolicyStringmapHandler)(&c.common)
 	c.ResponderAction = (*ResponderActionHandler)(&c.common)
