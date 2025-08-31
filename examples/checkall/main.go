@@ -193,8 +193,16 @@ func main() {
 	// nsfeature
 	// var nsfeature config.NsFeature
 	if _, err = client.NsFeature.Get(ctx); err != nil {
+		panic(err)
 	}
 	// fmt.Println(nsfeature)
+
+	// nsmode
+	// var nsmode config.NsMode
+	if _, err = client.NsMode.Get(ctx); err != nil {
+		panic(err)
+	}
+	// fmt.Println(nsmode)
 
 	// nsversion
 	// var nsversion config.NsVersionDetail
