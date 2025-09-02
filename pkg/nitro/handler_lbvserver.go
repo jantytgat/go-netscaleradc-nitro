@@ -55,7 +55,7 @@ func (h LbVserverHandler) Rename(ctx context.Context, oldLbVserverName string, n
 }
 
 func (h LbVserverHandler) Stats(ctx context.Context, lbVserverName string, attributes []string) (stat.LbVserver, error) {
-	return stats[stat.LbVserver](ctx, h.client, lbVserverName, attributes)
+	return statResourceWithName[stat.LbVserver](ctx, h.client, lbVserverName, attributes)
 }
 
 func (h LbVserverHandler) Unset(ctx context.Context, r config.LbVserver) error {

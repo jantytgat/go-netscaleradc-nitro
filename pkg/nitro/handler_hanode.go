@@ -53,7 +53,7 @@ func (h HaNodeHandler) List(ctx context.Context, attributes []string, filter map
 }
 
 func (h HaNodeHandler) Stats(ctx context.Context, attributes []string) (stat.HaNode, error) {
-	return stats[stat.HaNode](ctx, h.client, "", attributes)
+	return statResourceWithName[stat.HaNode](ctx, h.client, "", attributes)
 }
 
 func (h HaNodeHandler) Unset(ctx context.Context, r config.HaNode) error {

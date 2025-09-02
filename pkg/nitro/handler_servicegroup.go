@@ -60,7 +60,7 @@ func (h ServiceGroupHandler) Rename(ctx context.Context, oldName string, newName
 }
 
 func (h ServiceGroupHandler) Stats(ctx context.Context, serviceGroupName string, attributes []string) (stat.ServiceGroup, error) {
-	return stats[stat.ServiceGroup](ctx, h.client, serviceGroupName, attributes)
+	return statResourceWithName[stat.ServiceGroup](ctx, h.client, serviceGroupName, attributes)
 }
 
 func (h ServiceGroupHandler) Unset(ctx context.Context, r config.ServiceGroup) error {

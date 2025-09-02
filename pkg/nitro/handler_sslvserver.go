@@ -27,7 +27,7 @@ func (h SslVserverHandler) List(ctx context.Context, attributes []string, filter
 }
 
 func (h SslVserverHandler) Stats(ctx context.Context, sslVserverName string, attributes []string) (stat.SslVserver, error) {
-	return stats[stat.SslVserver](ctx, h.client, sslVserverName, attributes)
+	return statResourceWithName[stat.SslVserver](ctx, h.client, sslVserverName, attributes)
 }
 
 func (h SslVserverHandler) Unset(ctx context.Context, r config.SslVserver) error {

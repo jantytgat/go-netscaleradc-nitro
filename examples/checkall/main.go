@@ -10,6 +10,7 @@ import (
 
 	"github.com/jantytgat/go-netscaleradc-nitro/pkg/nitro"
 	"github.com/jantytgat/go-netscaleradc-nitro/pkg/nitro/resource/config"
+	"github.com/jantytgat/go-netscaleradc-nitro/pkg/nitro/resource/stat"
 )
 
 var (
@@ -182,6 +183,13 @@ func main() {
 			panic(err)
 		}
 	}
+
+	// ns
+	var nsstat stat.Ns
+	if nsstat, err = client.Ns.Stats(ctx, nil); err != nil {
+		panic(err)
+	}
+	fmt.Println(nsstat)
 
 	// nsconfig
 	// var nsconfig config.NsConfig

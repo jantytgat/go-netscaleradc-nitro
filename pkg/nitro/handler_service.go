@@ -47,7 +47,7 @@ func (h ServiceHandler) Rename(ctx context.Context, oldName string, newName stri
 }
 
 func (h ServiceHandler) Stats(ctx context.Context, serviceName string, attributes []string) (stat.Service, error) {
-	return stats[stat.Service](ctx, h.client, serviceName, attributes)
+	return statResourceWithName[stat.Service](ctx, h.client, serviceName, attributes)
 }
 
 func (h ServiceHandler) Unset(ctx context.Context, r config.Service) error {

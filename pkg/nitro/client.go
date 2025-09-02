@@ -83,6 +83,7 @@ type Client struct {
 	HaFailOver                *HaFailOverHandler
 	HaNode                    *HaNodeHandler
 	LbVserver                 *LbVserverHandler
+	Ns                        *NsHandler
 	NsConfig                  *NsConfigHandler
 	NsFeature                 *NsFeatureHandler
 	NsMode                    *NsModeHandler
@@ -220,6 +221,7 @@ func (c *Client) initialize() {
 	c.HaFailOver = (*HaFailOverHandler)(&c.common)
 	c.HaNode = (*HaNodeHandler)(&c.common)
 	c.LbVserver = (*LbVserverHandler)(&c.common)
+	c.Ns = (*NsHandler)(&c.common)
 	c.NsConfig = (*NsConfigHandler)(&c.common)
 	c.NsFeature = (*NsFeatureHandler)(&c.common)
 	c.NsMode = (*NsModeHandler)(&c.common)

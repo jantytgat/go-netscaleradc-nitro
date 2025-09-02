@@ -477,7 +477,26 @@ func renameResource[T ResourceReader](ctx context.Context, client *Client, r T) 
 	return nil
 }
 
-func stats[T ResourceReader](ctx context.Context, client *Client, name string, attributes []string) (T, error) {
+func statResource[T ResourceReader](ctx context.Context, client *Client, attributes []string) (T, error) {
+	req := Request[T]{
+		Method:     http.MethodGet,
+		Attributes: attributes,
+	}
+
+	var res *Response[T]
+	var err error
+	if res, err = executeNitroRequest(ctx, client, &req); err != nil {
+		return *new(T), err
+	}
+
+	if res.ErrorCode != 0 {
+		return *new(T), ApiError.WithCode(res.ErrorCode).WithMessage(res.Message)
+	}
+
+	return res.Data[0], nil
+}
+
+func statResourceWithName[T ResourceReader](ctx context.Context, client *Client, name string, attributes []string) (T, error) {
 	req := Request[T]{
 		Method:       http.MethodGet,
 		ResourceName: name,

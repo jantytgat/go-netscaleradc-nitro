@@ -2799,7 +2799,7 @@ const (
 	NSERR_NO_GSLBSVCGRP_ERROR_CODE                           errorCode = 1349
 	NSERR_NO_GSLBSVCGRP_ERROR_MESSAGE                        string    = "The GSLB servicegroup does not exist"
 	NSERR_RENAME_GSLB_SVCGRP_WARN_ERROR_CODE                 errorCode = 1350
-	NSERR_RENAME_GSLB_SVCGRP_WARN_ERROR_MESSAGE              string    = "Please fire this command on all the participating GSLB sites manually or by using real time sync otherwise stats exchange between GSLB sites will not work."
+	NSERR_RENAME_GSLB_SVCGRP_WARN_ERROR_MESSAGE              string    = "Please fire this command on all the participating GSLB sites manually or by using real time sync otherwise statResourceWithName exchange between GSLB sites will not work."
 	NSERR_CS_PERSIST_NT_ALLWD_ERROR_CODE                     errorCode = 1688
 	NSERR_CS_PERSIST_NT_ALLWD_ERROR_MESSAGE                  string    = "Persistence is not supported for PROXY and CS GSLB type of CS vservers."
 	NSERR_GSLB_WC_PER_NOT_SUPPORTED_ERROR_CODE               errorCode = 1494

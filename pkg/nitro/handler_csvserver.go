@@ -47,7 +47,7 @@ func (h CsVserverHandler) Rename(ctx context.Context, oldName string, newName st
 }
 
 func (h CsVserverHandler) Stats(ctx context.Context, csVserverName string, attributes []string) (stat.CsVserver, error) {
-	return stats[stat.CsVserver](ctx, h.client, csVserverName, attributes)
+	return statResourceWithName[stat.CsVserver](ctx, h.client, csVserverName, attributes)
 }
 
 func (h CsVserverHandler) Unset(ctx context.Context, r config.CsVserver) error {
